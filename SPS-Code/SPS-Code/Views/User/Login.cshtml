@@ -1,0 +1,19 @@
+﻿@using SPS_Code.Controllers.RequestModels
+@{
+
+}
+@model UserRequest?
+
+<form method="post" action="/user/login">
+    <div class="form-group">
+        <label>Email</label>
+        <input name="Email" value="@Model?.Email" type="email" class="form-control" placeholder="Zadej email...">
+    </div>
+    <div class="form-group">
+        <label>Heslo</label>
+        <input name="Password" type="password" class="form-control" placeholder="Zadej heslo...">
+    </div>
+    <button type="submit" class="btn btn-primary">Přihlásit se</button>
+
+    <p style="color: red;">@Model?.Message</p>
+</form>

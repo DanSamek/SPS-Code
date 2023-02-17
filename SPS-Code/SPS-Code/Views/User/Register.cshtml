@@ -1,0 +1,31 @@
+﻿@using SPS_Code.Controllers.RequestModels
+@{
+
+}
+@model RegisterRequest?
+
+<form method="post" action="/user/register">
+    <div class="form-group">
+        <label>Jméno</label>
+        <input value="@Model?.FirstName" name="FirstName" type="text" class="form-control" placeholder="Zadej jméno...">
+    </div>
+    <div class="form-group">
+        <label>Příjmení</label>
+        <input value="@Model?.LastName" name="LastName" type="text" class="form-control" placeholder="Zadej příjmení...">
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <input value="@Model?.Email" name="Email" type="email" class="form-control" placeholder="Zadej email...">
+    </div>
+    <div class="form-group">
+        <label>Heslo</label>
+        <input name="Password" type="password" class="form-control" placeholder="Zadej heslo...">
+    </div>
+    <div class="form-group">
+        <label>Heslo znovu</label>
+        <input name="PasswordCheck" type="password" class="form-control" placeholder="Zadej heslo ještě jednou...">
+    </div>
+    <button type="submit" class="btn btn-primary">Zaregistrovat se</button>
+
+    <p style="color: red;" >@Model?.Message</p>
+</form>
