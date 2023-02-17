@@ -1,0 +1,19 @@
+﻿@model List<SPS_Code.Data.Models.Task>
+
+@if(Model == null){
+    <p>Zatím zde žádná úloha není</p>
+    return;
+}
+
+
+<div>
+@foreach (var task in Model)
+{
+    <div>
+        <p>@task.Name</p>
+        <p>@task.MaxPoints</p>
+        <p>@task.Created</p>
+        <a href="/task/"></a>
+        </div>
+}
+</div>
