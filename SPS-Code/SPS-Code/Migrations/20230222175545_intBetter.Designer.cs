@@ -11,8 +11,8 @@ using SPS_Code.Data;
 namespace SPSCode.Migrations
 {
     [DbContext(typeof(CodeDbContext))]
-    [Migration("20230222162114_RemovedNMConnections")]
-    partial class RemovedNMConnections
+    [Migration("20230222175545_intBetter")]
+    partial class intBetter
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,8 +26,11 @@ namespace SPSCode.Migrations
 
             modelBuilder.Entity("SPS_Code.Data.Models.TaskModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("MaxPoints")
                         .HasColumnType("int");

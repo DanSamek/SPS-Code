@@ -11,7 +11,7 @@ namespace SPS_Code.Data.Models
     {
         [Required]
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public int Id { get; set; }
 
         [Required]
         public string? Name { get; set; }
@@ -21,6 +21,10 @@ namespace SPS_Code.Data.Models
 
         public DateTime Created = DateTime.Now;
 
+
+        /// <summary>
+        /// Task create
+        /// </summary>
         public static string? CreateAndSaveToDb(TaskCreateRequest request, CodeDbContext context, out string taskId)
         {
             taskId = null;
@@ -37,7 +41,6 @@ namespace SPS_Code.Data.Models
                 MaxPoints = request.MaxPoints,
             };
 
-            taskId = task.Id;
             // Save validator files and generator files
             if (!Directory.Exists("./Tasks")) Directory.CreateDirectory("./Tasks");
 
@@ -57,7 +60,20 @@ namespace SPS_Code.Data.Models
 
             context.Tasks?.Add(task);
             context.SaveChanges();
+            taskId = task.Id.ToString();
             return null;
+        }
+
+        /// <summary>
+        /// Generate input file for requested task
+        /// </summary>
+        public static void Generate(TaskModel? task)
+        {
+            var proc = System.Diagnostics.Process.Start($"./Tasks/{task?.Name}/generator.exe", DateTime.Now.Ticks.ToString());
+            proc.Start();
+            var data = proc.StandardOutput.ReadToEnd();
+            Console.WriteLine(data);
+            proc.WaitForExit();
         }
     }
 }

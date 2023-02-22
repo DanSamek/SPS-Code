@@ -23,8 +23,11 @@ namespace SPSCode.Migrations
 
             modelBuilder.Entity("SPS_Code.Data.Models.TaskModel", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("MaxPoints")
                         .HasColumnType("int");

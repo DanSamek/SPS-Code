@@ -9,12 +9,22 @@ namespace SPS_Code.Controllers
     [Route("task")]
     public class TaskController : Controller
     {
+        // User id : ActiveTask
+        static Dictionary<string, ActiveTask> ActiveTasks = new();
         private CodeDbContext _context;
         public TaskController(CodeDbContext context)
         {
             _context = context;
         }
 
+        [HttpGet("/task/{id}")]
+        public ActionResult Task(int id)
+        {
+            var task = _context.Tasks?.FirstOrDefault(x => x.Id == id);
+            if (task == null) return Redirect("/");
+
+            return View(task);
+        }
 
         [Route("show")]
         public ActionResult Show()
@@ -41,15 +51,34 @@ namespace SPS_Code.Controllers
             return View();
         }
 
-        [HttpPost("/generate/:taskId")]
-        public ActionResult GenerateFile(int taskId)
+        [HttpGet("/task/generate/{taskId}")]
+        public ActionResult Generate(int taskId)
         {
-            return Json("OK");
+
+            
+            //if (ActiveTasks.ContainsKey(HttpContext.Session.GetString(Helper.UserCookie))) return Redirect($"/task/{taskId}");
+            
+            //if (HttpContext.Session.GetString(Helper.UserCookie) == null) Redirect("/");
+
+            var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
+            if (task == null) return Redirect("/error");
+
+            TaskModel.Generate(task);
+
+            ActiveTask at = new()
+            {
+                TaskId = taskId
+            };
+
+            ActiveTasks.Add(HttpContext.Session.GetString(Helper.UserCookie), at);
+
+            return Redirect($"/task/{taskId}");
         }
 
-
-        public ActionResult ValidateResults()
+        [HttpPost("/validate/:taskId")]
+        public ActionResult ValidateResults(int taskId)
         {
+
             return Json("ok");
         }
 
@@ -63,5 +92,11 @@ namespace SPS_Code.Controllers
 
             return Redirect($"/task/{taskId}");
         }
+    }
+
+    class ActiveTask
+    { 
+        public int TaskId { get; set; }
+        public DateTime GeneratedTime = DateTime.Now;
     }
 }
