@@ -2,11 +2,11 @@
 
 namespace SPS_Code.Controllers.RequestModels
 {
-    public class ModelBase
+    public class RequestBase
     {
         [NotRequired]
         public string Message { get; set; }
-        public ModelBase SetError(string? error = null)
+        public RequestBase SetError(string? error = null)
         {
             Message = error;
             return this;

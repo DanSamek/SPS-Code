@@ -1,0 +1,25 @@
+﻿@using SPS_Code.Controllers.RequestModels
+@model TaskCreateRequest
+@{
+    ViewData["Title"] = "View";
+}
+
+<form action="/task/create" method="post" enctype="multipart/form-data">
+    <label for="Name">Název úlohy</label>
+    <input type="text" name="Name"/> 
+
+    <label for="MaxPoints">Maximální počet bodů</label>
+    <input type="number" name="MaxPoints" /> 
+
+    <label for="Description">Popis zadání (vhodný .pdf soubor)</label>
+    <input type="file" name="Description" />
+
+    <label for="Generator">Generátor vstupu</label>
+    <input type="file" name="Generator"/>
+
+    <label for="Validator">Validátor uživatelského výstupu</label>
+    <input type="file" name="Validator" />
+
+    <input  type="submit"/>
+    <p style="color: red;">@Model?.Message</p>
+</form>

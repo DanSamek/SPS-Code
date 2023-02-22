@@ -7,12 +7,8 @@ namespace SPS_Code.Data
     {
         public CodeDbContext(DbContextOptions<CodeDbContext> options) : base(options) { }
 
-        public DbSet<User>? Users { get; set; }
-        public DbSet<Models.Task>? Tasks { get; set; }
+        public DbSet<UserModel>? Users { get; set; }
+        public DbSet<TaskModel>? Tasks { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Models.Task>().HasMany(x => x.User).WithMany(x => x.Tasks);
-        }
     }
 }

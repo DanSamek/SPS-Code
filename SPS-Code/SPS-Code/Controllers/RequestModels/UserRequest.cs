@@ -1,6 +1,6 @@
 ﻿namespace SPS_Code.Controllers.RequestModels
 {
-    public class UserRequest : ModelBase
+    public class UserRequest : RequestBase
     {
         public string Password { get; set; }
         public string Email { get; set; }
