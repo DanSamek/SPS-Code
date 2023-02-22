@@ -21,7 +21,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 @{
-                    int? loggedID = ViewContext.HttpContext.Session.GetInt32(Helper.UserCookie);
+                    Helper.GetLoggedUser(ViewContext.HttpContext, out int? loggedID);
                 }
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
