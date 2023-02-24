@@ -21,6 +21,9 @@ namespace SPS_Code.Data.Models
 
         public DateTime Created = DateTime.Now;
 
+        /*
+        [Required]
+        public int MaxSubmitTimeMinutes { get; set; }*/
 
         /// <summary>
         /// Task create
@@ -49,7 +52,7 @@ namespace SPS_Code.Data.Models
             Directory.CreateDirectory($"./Tasks/{task.Name}");
             Directory.CreateDirectory($"./wwwroot/Tasks/{task.Name}");
 
-            using var generatorFileStream = File.Create($"./Tasks/{task.Name}/genetator.exe");
+            using var generatorFileStream = File.Create($"./Tasks/{task.Name}/generator.exe");
             request.Generator.CopyTo(generatorFileStream);
 
             using var validatorFileStream = File.Create($"./Tasks/{task.Name}/validator.exe");
@@ -67,13 +70,23 @@ namespace SPS_Code.Data.Models
         /// <summary>
         /// Generate input file for requested task
         /// </summary>
-        public static void Generate(TaskModel? task)
+        public static string Generate(TaskModel? task)
         {
-            var proc = System.Diagnostics.Process.Start($"./Tasks/{task?.Name}/generator.exe", DateTime.Now.Ticks.ToString());
-            proc.Start();
-            var data = proc.StandardOutput.ReadToEnd();
-            Console.WriteLine(data);
-            proc.WaitForExit();
+            string path = string.Empty;
+            var baseDir = Directory.GetCurrentDirectory();
+            var proc = System.Diagnostics.Process.Start($@"{baseDir}\Tasks\{task?.Name}\generator.exe", DateTime.Now.Ticks.ToString());
+            proc.StartInfo.RedirectStandardOutput = true;
+            if (proc.Start())
+            {                 
+                string data = proc.StandardOutput.ReadToEnd();
+                path = Guid.NewGuid().ToString();
+                using var fileStream = new FileStream($"./{path}.txt", FileMode.Create);
+                using var writer = new StreamWriter(fileStream);
+                writer.WriteLine(data);
+                proc.WaitForExit();
+            }
+
+            return path;
         }
     }
 }

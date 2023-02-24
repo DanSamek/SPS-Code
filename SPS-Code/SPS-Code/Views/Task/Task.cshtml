@@ -1,5 +1,15 @@
-﻿@using SPS_Code.Data.Models
-@model TaskModel
+﻿@model SPS_Code.Controllers.ResponseTask
 
+@if(Model.ActiveTask != null){
+
+    <a href="/input/@Model.Name/todo">Stáhnout vstup</a>
+    <p>Odevzdat do: @Model.ActiveTask.GeneratedTime</p>
+
+    <form action="/todo/" method="post">
+        <input type="file" name="UserFile" >
+        <input type="submit"/>
+    </form>
+    return;
+}
 
 <a href="/task/generate/@Model.Id">Vygenerovat vstup</a>

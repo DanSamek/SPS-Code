@@ -2,7 +2,6 @@
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Data;
 using SPS_Code.Data.Models;
-using SPS_Code.Helpers;
 
 namespace SPS_Code.Controllers
 {
@@ -23,7 +22,15 @@ namespace SPS_Code.Controllers
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == id);
             if (task == null) return Redirect("/");
 
-            return View(task);
+            ResponseTask rt = new();
+            rt.MaxPoints = task.MaxPoints;
+            rt.Created = task.Created;
+            rt.Name = task.Name;
+            rt.Id = task.Id;
+            ActiveTask at = new();
+            if(ActiveTasks.ContainsKey("Test")) at = ActiveTasks["Test"];
+            if (at.TaskId  == id) rt.ActiveTask = at;
+            return View(rt);
         }
 
         [Route("show")]
@@ -55,7 +62,6 @@ namespace SPS_Code.Controllers
         public ActionResult Generate(int taskId)
         {
 
-            
             //if (ActiveTasks.ContainsKey(HttpContext.Session.GetString(Helper.UserCookie))) return Redirect($"/task/{taskId}");
             
             //if (HttpContext.Session.GetString(Helper.UserCookie) == null) Redirect("/");
@@ -63,14 +69,16 @@ namespace SPS_Code.Controllers
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
             if (task == null) return Redirect("/error");
 
-            TaskModel.Generate(task);
+            var path = TaskModel.Generate(task);
 
             ActiveTask at = new()
             {
-                TaskId = taskId
+                TaskId = taskId,
+                Uri = path,
             };
 
-            ActiveTasks.Add(HttpContext.Session.GetString(Helper.UserCookie), at);
+            //ActiveTasks.Add(HttpContext.Session.GetString(Helper.UserCookie), at);
+            ActiveTasks.Add("Test", at);
 
             return Redirect($"/task/{taskId}");
         }
@@ -94,9 +102,16 @@ namespace SPS_Code.Controllers
         }
     }
 
-    class ActiveTask
+    public class ActiveTask
     { 
         public int TaskId { get; set; }
-        public DateTime GeneratedTime = DateTime.Now;
+        public string Uri { get; set; }
+
+        public DateTime GeneratedTime = DateTime.Now.AddMinutes(5);
+    }
+
+    public class ResponseTask : TaskModel
+    {
+        public ActiveTask ActiveTask { get; set; }
     }
 }
