@@ -58,13 +58,29 @@ namespace SPS_Code.Controllers
             return View();
         }
 
+
+        [HttpGet("/task/download/{taskId}")]
+        public ActionResult DownloadInput(int taskId)
+        {
+            //if (HttpContext.Session.GetString(Helper.UserCookie) == null) Redirect("/");
+            var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
+            if (task == null) return Redirect("/error");
+
+
+            // if(ActiveTasks.ContainsKey(HttpContext.Session.GetString(Helper.UserCookie)));
+            if (!ActiveTasks.ContainsKey("Test")) return Redirect($"/task/{taskId}");
+
+            ActiveTasks.TryGetValue("Test", out var at);
+            if (at.TaskId != taskId) return Redirect($"/task/{taskId}");
+
+            return File(at.Uri, "text/plain");
+        }
+
         [HttpGet("/task/generate/{taskId}")]
         public ActionResult Generate(int taskId)
         {
-
-            //if (ActiveTasks.ContainsKey(HttpContext.Session.GetString(Helper.UserCookie))) return Redirect($"/task/{taskId}");
-            
             //if (HttpContext.Session.GetString(Helper.UserCookie) == null) Redirect("/");
+            //if (ActiveTasks.ContainsKey(HttpContext.Session.GetString(Helper.UserCookie))) return Redirect($"/task/{taskId}");
 
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
             if (task == null) return Redirect("/error");
@@ -79,9 +95,9 @@ namespace SPS_Code.Controllers
 
             //ActiveTasks.Add(HttpContext.Session.GetString(Helper.UserCookie), at);
             ActiveTasks.Add("Test", at);
-
             return Redirect($"/task/{taskId}");
         }
+
 
         [HttpPost("/validate/:taskId")]
         public ActionResult ValidateResults(int taskId)

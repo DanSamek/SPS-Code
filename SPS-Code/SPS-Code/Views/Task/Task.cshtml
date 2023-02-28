@@ -2,13 +2,14 @@
 
 @if(Model.ActiveTask != null){
 
-    <a href="/input/@Model.Name/todo">Stáhnout vstup</a>
+    <a href="/task/download/@Model.ActiveTask.TaskId">Stáhnout vstup</a>
     <p>Odevzdat do: @Model.ActiveTask.GeneratedTime</p>
-
-    <form action="/todo/" method="post">
+    @*
+    <form action="/task/download/@Model.ActiveTask.TaskId" method="post">
         <input type="file" name="UserFile" >
         <input type="submit"/>
     </form>
+    *@
     return;
 }
 
