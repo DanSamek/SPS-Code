@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Helpers;
 using System.ComponentModel.DataAnnotations;
@@ -80,6 +80,8 @@ namespace SPS_Code.Data.Models
             var baseDir = Directory.GetCurrentDirectory();
             var proc = System.Diagnostics.Process.Start($@"{baseDir}\Tasks\{task?.Name}\generator.exe", DateTime.Now.Ticks.ToString());
             proc.StartInfo.RedirectStandardOutput = true;
+            if (!Directory.Exists("./tmp")) Directory.CreateDirectory("./tmp");
+            if (!Directory.Exists($"./tmp/{task.Id}")) Directory.CreateDirectory($"./tmp/{task.Id}");
             if (proc.Start())
             {                 
                 string data = proc.StandardOutput.ReadToEnd();
@@ -90,7 +92,6 @@ namespace SPS_Code.Data.Models
                 writer.WriteLine(data);
                 proc.WaitForExit();
             }
-
             return path;
         }
 
