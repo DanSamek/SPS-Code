@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using SPS_Code.Controllers;
+using System.Reflection;
 
 namespace SPS_Code.Helpers
 {
@@ -13,6 +14,11 @@ namespace SPS_Code.Helpers
         /// Klíč do tempDat kvůli úspěšnému přihlášení
         /// </summary>
         public static string LoginSuccessful => "loginSuccessful";
+
+        /// <summary>
+        /// Počet minut, po kterých se vygenerovaný vstup smaže
+        /// </summary>
+        public static int MinutesToDelete => 15;
 
         /// <summary>
         /// Pokud něco bude prázdné v objektu, vrátí null
@@ -34,6 +40,33 @@ namespace SPS_Code.Helpers
                 if (string.IsNullOrEmpty(propValue)) return false;
             }
             return true;
+        }
+    }
+    public static class TmpFolder
+    {
+        /// <summary>
+        /// Deletes all files in tmp older, then 15 minutes
+        /// </summary>
+        public static void DeleteOldFiles(object state)
+        {
+            if (!Directory.Exists("./Tmp")) return;
+
+            var files = Directory.GetFiles("./Tmp");
+
+            DateTime dateTime = DateTime.Now.AddMinutes(-Helper.MinutesToDelete);
+
+            int fileDeleted = 0;
+            foreach (var f in files)
+            {
+                var fct = System.IO.File.GetCreationTime(f);
+                if (fct < dateTime)
+                {
+                    System.IO.File.Delete(f);
+                    fileDeleted++;
+                }
+            }
+            if (fileDeleted > 0) Console.WriteLine($"{DateTime.Now}: Tmp files deleted: {fileDeleted}");
+            
         }
     }
 }

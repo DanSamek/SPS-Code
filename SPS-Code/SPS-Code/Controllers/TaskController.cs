@@ -2,6 +2,7 @@
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Data;
 using SPS_Code.Data.Models;
+using SPS_Code.Helpers;
 
 namespace SPS_Code.Controllers
 {
@@ -27,9 +28,12 @@ namespace SPS_Code.Controllers
             rt.Created = task.Created;
             rt.Name = task.Name;
             rt.Id = task.Id;
+            rt.Description = task.Description;
             ActiveTask at = new();
-            if(ActiveTasks.ContainsKey("Test")) at = ActiveTasks["Test"];
-            if (at.TaskId  == id) rt.ActiveTask = at;
+            var cookie = HttpContext.Session.GetString(Helper.UserCookie);
+            if (cookie == null) return View(rt);
+            if (ActiveTasks.ContainsKey(cookie)) at = ActiveTasks[cookie];
+            if (at.TaskId == id) rt.ActiveTask = at;
             return View(rt);
         }
 
@@ -58,14 +62,33 @@ namespace SPS_Code.Controllers
             return View();
         }
 
+
+        [HttpGet("/task/downloadInput/{taskId}")]
+        public ActionResult Download(int taskId)
+        {
+            var cookie = HttpContext.Session.GetString(Helper.UserCookie);
+
+            if(cookie == null || !ActiveTasks.ContainsKey(cookie)) return Redirect("/");
+           
+            var at = ActiveTasks[cookie];
+
+            if (at.TaskId != taskId) return Redirect($"/task/{taskId}");
+
+            byte[] fileData = System.IO.File.ReadAllBytes(at.Uri);
+
+
+            return File(fileData, "application/force-download", "input.txt");
+        }
+
         [HttpGet("/task/generate/{taskId}")]
         public ActionResult Generate(int taskId)
         {
+            var cookie = HttpContext.Session.GetString(Helper.UserCookie);
 
-            //if (ActiveTasks.ContainsKey(HttpContext.Session.GetString(Helper.UserCookie))) return Redirect($"/task/{taskId}");
-            
-            //if (HttpContext.Session.GetString(Helper.UserCookie) == null) Redirect("/");
+            if (cookie == null) return Redirect("/");
 
+            if (ActiveTasks.ContainsKey(cookie)) return Redirect($"/task/{taskId}");
+           
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
             if (task == null) return Redirect("/error");
 
@@ -75,17 +98,28 @@ namespace SPS_Code.Controllers
             {
                 TaskId = taskId,
                 Uri = path,
+                TimeUntil = DateTime.Now.AddMinutes(task.MaxSubmitTimeMinutes)
             };
 
-            //ActiveTasks.Add(HttpContext.Session.GetString(Helper.UserCookie), at);
-            ActiveTasks.Add("Test", at);
+            ActiveTasks.Add(cookie, at);
 
             return Redirect($"/task/{taskId}");
         }
 
-        [HttpPost("/validate/:taskId")]
-        public ActionResult ValidateResults(int taskId)
+        [HttpPost("/task/validateInput/:taskId")]
+        public ActionResult ValidateInput(int taskId, IFormFile userOutput)
         {
+            var cookie = HttpContext.Session.GetString(Helper.UserCookie);
+            if (cookie == null) return Redirect("/");
+
+            var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
+            if (task == null || !ActiveTasks.ContainsKey(cookie)) return Redirect("/");
+
+            var at = ActiveTasks[cookie];
+
+            var points = TaskModel.Validate(userOutput, task, at.Uri);
+
+            Console.WriteLine(points);
 
             return Json("ok");
         }
@@ -106,8 +140,7 @@ namespace SPS_Code.Controllers
     { 
         public int TaskId { get; set; }
         public string Uri { get; set; }
-
-        public DateTime GeneratedTime = DateTime.Now.AddMinutes(5);
+        public DateTime TimeUntil { get; set; }
     }
 
     public class ResponseTask : TaskModel

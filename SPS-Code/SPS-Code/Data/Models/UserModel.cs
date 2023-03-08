@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SPS_Code.Controllers.RequestModels;
+﻿using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Helpers;
 using System.ComponentModel.DataAnnotations;
 using bcrypt = BCrypt.Net.BCrypt;

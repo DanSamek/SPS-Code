@@ -4,8 +4,10 @@
     {
         public IFormFile Generator { get; set; }
         public IFormFile Validator { get; set; }
-        public IFormFile Description { get; set; }
+        public string Description { get; set; }
         public string Name { get; set; }
         public int MaxPoints { get; set; }
+        public int MaxSubmitTimeMinutes { get; set; }
+        public int TestCount { get; set; }
     }
 }

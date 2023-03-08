@@ -5,7 +5,7 @@
 namespace SPSCode.Migrations
 {
     /// <inheritdoc />
-    public partial class intBetter : Migration
+    public partial class TaskModelChanges : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,7 +33,10 @@ namespace SPSCode.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MaxPoints = table.Column<int>(type: "int", nullable: false),
+                    MaxSubmitTimeMinutes = table.Column<int>(type: "int", nullable: false),
+                    TestCount = table.Column<int>(type: "int", nullable: false),
                     UserModelId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>

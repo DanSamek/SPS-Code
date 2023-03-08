@@ -1,4 +1,5 @@
-﻿using SPS_Code.Controllers.RequestModels;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Helpers;
 using System.ComponentModel.DataAnnotations;
 
@@ -15,15 +16,21 @@ namespace SPS_Code.Data.Models
 
         [Required]
         public string? Name { get; set; }
-        
+
+        // In MD
+        [Required]
+        public string Description { get; set; }
+
         [Required]
         public int MaxPoints { get; set; }
 
-        public DateTime Created = DateTime.Now;
-
-        /*
         [Required]
-        public int MaxSubmitTimeMinutes { get; set; }*/
+        public int MaxSubmitTimeMinutes { get; set; }
+
+        [Required]
+        public int TestCount { get; set; }
+
+        public DateTime Created = DateTime.Now;
 
         /// <summary>
         /// Task create
@@ -42,24 +49,21 @@ namespace SPS_Code.Data.Models
             {
                 Name = request.Name,
                 MaxPoints = request.MaxPoints,
+                Description = request.Description,
+                MaxSubmitTimeMinutes = request.MaxSubmitTimeMinutes,
+                TestCount = request.TestCount
             };
 
             // Save validator files and generator files
             if (!Directory.Exists("./Tasks")) Directory.CreateDirectory("./Tasks");
 
-            if (!Directory.Exists("./wwwroot/Tasks")) Directory.CreateDirectory("./wwwroot/Tasks");
-
             Directory.CreateDirectory($"./Tasks/{task.Name}");
-            Directory.CreateDirectory($"./wwwroot/Tasks/{task.Name}");
 
             using var generatorFileStream = File.Create($"./Tasks/{task.Name}/generator.exe");
             request.Generator.CopyTo(generatorFileStream);
 
             using var validatorFileStream = File.Create($"./Tasks/{task.Name}/validator.exe");
             request.Validator.CopyTo(validatorFileStream);
-
-            using var descriptionFileStream = File.Create($"./wwwroot/Tasks/{task.Name}/{request.Description.FileName}");
-            request.Description.CopyTo(descriptionFileStream);
 
             context.Tasks?.Add(task);
             context.SaveChanges();
@@ -79,14 +83,47 @@ namespace SPS_Code.Data.Models
             if (proc.Start())
             {                 
                 string data = proc.StandardOutput.ReadToEnd();
-                path = Guid.NewGuid().ToString();
-                using var fileStream = new FileStream($"./{path}.txt", FileMode.Create);
+                if (!Directory.Exists($@"{baseDir}\Tmp\")) Directory.CreateDirectory($@"{baseDir}\Tmp");
+                path = $@"{baseDir}\Tmp\{Guid.NewGuid().ToString()}.txt";
+                using var fileStream = new FileStream(path, FileMode.Create);
                 using var writer = new StreamWriter(fileStream);
                 writer.WriteLine(data);
                 proc.WaitForExit();
             }
 
             return path;
+        }
+
+        /// <summary>
+        /// Validation of user input, when mistake is done by user output, it will calculate total points for user
+        /// </summary>
+        public static int Validate(IFormFile userOutput, TaskModel task, string generatedFileInput)
+        {
+            using var stream = userOutput.OpenReadStream();
+            using var streamReader = new StreamReader(stream);
+            var userDatai = streamReader.ReadToEnd();
+
+            // Run validation script
+            var baseDir = Directory.GetCurrentDirectory();
+            var proc = System.Diagnostics.Process.Start($@"{baseDir}\Tasks\{task?.Name}\validator.exe", generatedFileInput);
+            proc.StartInfo.RedirectStandardOutput = true;
+
+            int tRight = 0;
+
+            if (proc.Start())
+            {
+                string dataI = proc.StandardOutput.ReadToEnd();
+                var data = dataI.Split("\n");
+                var userData = userDatai.Split("\n");
+
+                // Validate every line, if wrong value, break
+                for (int i = 0; i < data.Length; i++)
+                {
+                    if (data[i] == userData[i]) tRight++;
+                    else break;
+                }
+            }
+            return task.TestCount/tRight;
         }
     }
 }

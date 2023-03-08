@@ -1,11 +1,18 @@
-﻿@model SPS_Code.Controllers.ResponseTask
+﻿@using Markdig;
+@using SPS_Code.Helpers;
+@model SPS_Code.Controllers.ResponseTask
+
+<div>
+    @Html.Raw(Markdown.ToHtml(Model.Description))
+</div>
+@if(ViewContext.HttpContext.Session.GetString(Helper.UserCookie) == null) return;
 
 @if(Model.ActiveTask != null){
 
-    <a href="/input/@Model.Name/todo">Stáhnout vstup</a>
-    <p>Odevzdat do: @Model.ActiveTask.GeneratedTime</p>
+    <a href="/task/downloadInput/@Model.Id/">Stáhnout vstup</a>
+    <p>Odevzdat do: @Model.ActiveTask.TimeUntil</p>
 
-    <form action="/todo/" method="post">
+    <form action="/task/validateInput/@Model.Id" method="post">
         <input type="file" name="UserFile" >
         <input type="submit"/>
     </form>

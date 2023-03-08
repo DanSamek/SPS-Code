@@ -11,8 +11,8 @@ using SPS_Code.Data;
 namespace SPSCode.Migrations
 {
     [DbContext(typeof(CodeDbContext))]
-    [Migration("20230222175545_intBetter")]
-    partial class intBetter
+    [Migration("20230308215102_TaskModelChanges")]
+    partial class TaskModelChanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,12 +32,22 @@ namespace SPSCode.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MaxPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxSubmitTimeMinutes")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TestCount")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserModelId")
                         .HasColumnType("nvarchar(450)");
