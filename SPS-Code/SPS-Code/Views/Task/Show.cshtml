@@ -1,4 +1,4 @@
-﻿@model List<SPS_Code.Data.Models.Task>
+﻿@model List<SPS_Code.Data.Models.TaskModel>
 
 @if(Model == null){
     <p>Zatím zde žádná úloha není</p>
@@ -13,7 +13,7 @@
         <p>@task.Name</p>
         <p>@task.MaxPoints</p>
         <p>@task.Created</p>
-        <a href="/task/"></a>
+        <a href="/task/@task.Id">Podívat se na zadání</a>
         </div>
 }
 </div>

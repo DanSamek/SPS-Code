@@ -1,0 +1,22 @@
+@using Markdig;
+@using SPS_Code.Helpers;
+@model SPS_Code.Controllers.ResponseTask
+
+<div>
+    @Html.Raw(Markdown.ToHtml(Model.Description))
+</div>
+@if(ViewContext.HttpContext.Session.GetString(Helper.UserCookie) == null) return;
+
+@if(Model.ActiveTask != null){
+
+    <a href="/task/downloadInput/@Model.Id/">Stáhnout vstup</a>
+    <p>Odevzdat do: @Model.ActiveTask.TimeUntil</p>
+
+    <form action="/task/validateInput/@Model.Id" method="post">
+        <input type="file" name="UserFile" >
+        <input type="submit"/>
+    </form>
+    return;
+}
+
+<a href="/task/generate/@Model.Id">Vygenerovat vstup</a>
