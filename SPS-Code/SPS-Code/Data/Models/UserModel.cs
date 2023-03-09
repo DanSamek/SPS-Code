@@ -25,8 +25,11 @@ namespace SPS_Code.Data.Models
 
         [Required]
         public bool IsAdmin { get; set; } = false;
+        
+        [Required]
+        public virtual List<UserTaskResult>? Tasks { get; set; } = new();
 
-        public virtual List<TaskModel>? Tasks { get; set; } = new List<TaskModel>();
+
         public static string? CreateAndSaveToDb(RegisterRequest request, CodeDbContext context)
         {
             if (!Helper.CheckAllParams(request)) return "Něco nebylo vyplněno!";
