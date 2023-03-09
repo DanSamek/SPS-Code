@@ -2,9 +2,13 @@
 @{
 
 }
+@section Style {
+    <link rel="stylesheet" href="~/css//UserSignInUp.css" asp-append-version="true" />
+}
+
 @model RegisterRequest?
 
-<form method="post" action="/user/register">
+@*<form method="post" action="/user/register">
     <div class="form-group">
         <label>Jméno</label>
         <input value="@Model?.FirstName" name="FirstName" type="text" class="form-control" placeholder="Zadej jméno...">
@@ -28,4 +32,20 @@
     <button type="submit" class="btn btn-primary">Zaregistrovat se</button>
 
     <p style="color: red;" >@Model?.Message</p>
-</form>
+</form>*@
+
+<div id="secure-panel">
+    <h2>SPŠ-Code</h2>
+    <form action="/user/register" method="post" class="secure-form">
+        <h3>Zaregistrovat se</h3>
+        <input value="@Model?.FirstName" name="FirstName" type="text" placeholder="Jméno...">
+        <input value="@Model?.LastName" name="LastName" type="text" placeholder="Příjmení...">
+        <input value="@Model?.Email" type="text" name="Email" placeholder="Email..." />
+        <input type="password" name="Password" placeholder="Heslo..." />
+        <input type="password" name="PasswordCheck" placeholder="Heslo pro kontrolu..." />
+        <input type="submit" value="Zaregistrovat se" />
+    </form>
+    <p id="chybova-hlaska">@ViewData["Chyba"]</p>
+
+    <a href="/user/login">Přihlásit se</a>
+</div>

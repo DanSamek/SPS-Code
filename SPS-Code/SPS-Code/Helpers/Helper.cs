@@ -1,5 +1,7 @@
-﻿using SPS_Code.Controllers;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using SPS_Code.Data.Models;
 
 namespace SPS_Code.Helpers
 {
@@ -40,6 +42,13 @@ namespace SPS_Code.Helpers
                 if (string.IsNullOrEmpty(propValue)) return false;
             }
             return true;
+        }
+
+
+        public static bool GetLoggedUser(HttpContext context, out int? id)
+        {
+            id = context.Session.GetInt32(UserCookie);
+            return id != null;
         }
     }
     public static class TmpFolder
