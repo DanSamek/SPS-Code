@@ -9,7 +9,7 @@ namespace SPS_Code.Data.Models
     {
         [Required]
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; }
 
         [Required]
         public string? FirstName { get; set; }
@@ -47,6 +47,7 @@ namespace SPS_Code.Data.Models
                 FirstName = request.FirstName,
                 LastName = request.LastName,    
                 Password = bcrypt.HashPassword(request.Password),
+                Id = Guid.NewGuid().ToString()
             };
 
             context.Users?.Add(user);

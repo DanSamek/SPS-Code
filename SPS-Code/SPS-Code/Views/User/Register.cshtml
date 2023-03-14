@@ -45,7 +45,7 @@
         <input type="password" name="PasswordCheck" placeholder="Heslo pro kontrolu..." />
         <input type="submit" value="Zaregistrovat se" />
     </form>
-    <p id="chybova-hlaska">@ViewData["Chyba"]</p>
+    <p id="chybova-hlaska">@Model?.Message</p>
 
     <a href="/user/login">Přihlásit se</a>
 </div>

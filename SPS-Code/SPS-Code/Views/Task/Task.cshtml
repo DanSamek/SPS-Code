@@ -5,6 +5,7 @@
 <div>
     @Html.Raw(Markdown.ToHtml(Model.Description))
 </div>
+
 @if(ViewContext.HttpContext.Session.GetString(Helper.UserCookie) == null) return;
 
 @if(Model.ActiveTask != null){
@@ -12,11 +13,24 @@
     <a href="/task/downloadInput/@Model.Id/">Stáhnout vstup</a>
     <p>Odevzdat do: @Model.ActiveTask.TimeUntil</p>
 
-    <form action="/task/validateInput/@Model.Id" method="post">
+    <form action="/task/validateInput/@Model.Id" method="post" enctype="multipart/form-data">
         <input type="file" name="UserFile" >
         <input type="submit"/>
     </form>
     return;
 }
-
 <a href="/task/generate/@Model.Id">Vygenerovat vstup</a>
+
+
+@if(Model.UserTaskResult == null) return;
+
+
+<div>
+    <h2>Výsledky/Informace</h2>
+    <p>Počet pokusů:  @Model.UserTaskResult.AttemptsCount</p>
+    <p>Maximální počet bodů:  @Model.UserTaskResult.MaxPointsObtained</p>
+    <p>Poslední pokus:  @Model.UserTaskResult.LastAttemptTime</p>
+</div>
+
+
+

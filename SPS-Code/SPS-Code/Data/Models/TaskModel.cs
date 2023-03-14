@@ -30,8 +30,8 @@ namespace SPS_Code.Data.Models
         [Required]
         public int TestCount { get; set; }
 
-        public DateTime Created = DateTime.Now;
-
+        [Required]
+        public DateTime Created { get; set; }
         /// <summary>
         /// Task create
         /// </summary>
@@ -51,7 +51,8 @@ namespace SPS_Code.Data.Models
                 MaxPoints = request.MaxPoints,
                 Description = request.Description,
                 MaxSubmitTimeMinutes = request.MaxSubmitTimeMinutes,
-                TestCount = request.TestCount
+                TestCount = request.TestCount,
+                Created = DateTime.Now
             };
 
             // Save validator files and generator files
@@ -78,7 +79,7 @@ namespace SPS_Code.Data.Models
         {
             string path = string.Empty;
             var baseDir = Directory.GetCurrentDirectory();
-            var proc = System.Diagnostics.Process.Start($@"{baseDir}\Tasks\{task?.Name}\generator.exe", DateTime.Now.Ticks.ToString());
+            var proc = System.Diagnostics.Process.Start($@"{baseDir}\Tasks\{task?.Name}\generator.exe");
             proc.StartInfo.RedirectStandardOutput = true;
             if (proc.Start())
             {                 
@@ -120,9 +121,12 @@ namespace SPS_Code.Data.Models
                 {
                     if (data[i] == userData[i]) tRight++;
                     else break;
+
+                    // For tests
+                    if (tRight == task.TestCount) break;
                 }
             }
-            return task.TestCount/tRight;
+            return (int)((double)tRight/task.TestCount * task.MaxPoints);
         }
     }
 }

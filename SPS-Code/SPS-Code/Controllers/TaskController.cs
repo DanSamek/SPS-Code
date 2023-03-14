@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Data;
 using SPS_Code.Data.Models;
@@ -34,6 +35,10 @@ namespace SPS_Code.Controllers
             if (cookie == null) return View(rt);
             if (ActiveTasks.ContainsKey(cookie)) at = ActiveTasks[cookie];
             if (at.TaskId == id) rt.ActiveTask = at;
+
+            var user = _context.Users.Include(x => x.Tasks).FirstOrDefault(x => x.Id == cookie);
+            var taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == id);
+            rt.UserTaskResult = taskResult;
             return View(rt);
         }
 
@@ -106,8 +111,8 @@ namespace SPS_Code.Controllers
             return Redirect($"/task/{taskId}");
         }
 
-        [HttpPost("/task/validateInput/:taskId")]
-        public ActionResult ValidateInput(int taskId, IFormFile userOutput)
+        [HttpPost("/task/validateInput/{taskId}")]
+        public ActionResult ValidateInput(int taskId, [FromForm] IFormFile UserFile)
         {
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
             if (cookie == null) return Redirect("/");
@@ -117,11 +122,34 @@ namespace SPS_Code.Controllers
 
             var at = ActiveTasks[cookie];
 
-            var points = TaskModel.Validate(userOutput, task, at.Uri);
+            var points = TaskModel.Validate(UserFile, task, at.Uri);
 
-            Console.WriteLine(points);
+            var user = _context.Users.Include(x => x.Tasks).FirstOrDefault(x => x.Id == cookie);
+            
 
-            return Json("ok");
+            var taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == taskId);
+
+            if (taskResult == null)
+            {
+                user.Tasks.Add(new UserTaskResult()
+                {
+                    AttemptsCount = 1,
+                    LastAttemptTime = DateTime.Now,
+                    MaxPointsObtained = points,
+                    Task = task,
+                    User = user
+                });
+            }
+            else
+            {
+                taskResult.AttemptsCount++;
+                taskResult.LastAttemptTime = DateTime.Now;
+                taskResult.MaxPointsObtained = Math.Max(taskResult.MaxPointsObtained, points);
+            }
+
+            ActiveTasks.Remove(cookie);
+            _context.Users.Update(user);
+            return Redirect($"/task/{task.Id}");
         }
 
 
@@ -146,5 +174,7 @@ namespace SPS_Code.Controllers
     public class ResponseTask : TaskModel
     {
         public ActiveTask ActiveTask { get; set; }
+
+        public UserTaskResult UserTaskResult { get; set; }
     }
 }
