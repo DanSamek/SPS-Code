@@ -1,19 +1,34 @@
 ﻿@model List<SPS_Code.Data.Models.TaskModel>
 
+@section Style {
+    <link rel="stylesheet" href="~/css/Task.css" asp-append-version="true" />
+}
+
 @if(Model == null){
     <p>Zatím zde žádná úloha není</p>
     return;
 }
 
 
-<div>
-@foreach (var task in Model)
-{
+<div class="task-overview">
+@if (Model.Count() > 0) {
     <div>
-        <p>@task.Name</p>
-        <p>@task.MaxPoints</p>
-        <p>@task.Created</p>
-        <a href="/task/@task.Id">Podívat se na zadání</a>
+        <p>Název</p>
+        <p>Max. bodů</p>
+        <p>Počet Min.</p>
+        <p>Vytvořeno</p>
+        <p>Zadání</p>
+    </div>
+
+    @foreach (var task in Model)
+    {
+        <div>
+            <p>@task.Name</p>
+            <p>@task.MaxPoints b.</p>
+            <p>@task.MaxSubmitTimeMinutes min.</p>
+            <p>@task.Created.ToShortDateString()</p>
+            <a href="/task/@task.Id"><img src="~/img/info.png"></a>
         </div>
+    }
 }
 </div>

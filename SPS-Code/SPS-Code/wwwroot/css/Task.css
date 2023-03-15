@@ -1,0 +1,44 @@
+﻿.task-overview > div {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 100px;
+
+    line-height: 35px;
+    padding: 5px 10px;
+
+    text-align: center;
+
+    border-bottom: 2px solid lightgray;
+}
+
+.task-overview > div:hover {
+    background-color: #f0f3f6;
+}
+
+.task-overview > div:first-child {
+    background-color: #1F8FFF;
+    color: white;
+    border-bottom: 2px solid #186EC4;
+}
+
+.task-overview > div :first-child {
+    text-align: left;
+}
+
+.task-overview p {
+    margin: 0;
+}
+
+.task-overview img {
+    height: 30px;
+}
+
+
+@media screen and (max-width: 575px) {
+    .task-overview > div {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+    }
+    .task-overview img {
+        height: 25px;
+    }
+}
