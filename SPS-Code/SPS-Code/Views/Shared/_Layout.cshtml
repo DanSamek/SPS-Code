@@ -21,7 +21,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 @{
-                    Helper.GetLoggedUser(ViewContext.HttpContext, out int? loggedID);
+                    Helper.GetLoggedUser(ViewContext.HttpContext, out var loggedID);
                 }
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
