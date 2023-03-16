@@ -4,23 +4,53 @@
 
 <div>
     @Html.Raw(Markdown.ToHtml(Model.Description))
+    @*More nested xdd*@
+    @if (ViewContext.HttpContext.Session.GetString(Helper.UserCookie) != null) {
+        @if (Model.ActiveTask != null)
+        {
+            <a href="/task/downloadInput/@Model.Id/">Stáhnout vstup</a>
+            <p>Odevzdat do: @Model.ActiveTask.TimeUntil</p>
+
+            <form action="/task/validateInput/@Model.Id" method="post" enctype="multipart/form-data">
+                <input type="file" name="UserFile">
+                <input type="submit" />
+            </form>
+        }
+        else
+        {
+            <a href="/task/generate/@Model.Id">Vygenerovat vstup</a>
+        }
+    }
+
+    <h3>Příklady</h3>
+    <h4>Vstupy </h4>
+    <div id="inputs" class="pre">
+            @Model.Inputs
+    </div>
+    <div class="copyButton" title="Kopírovat" onclick="copyData(inputs)">Kopírovat</div>
+
+    <h4>Výstupy</h4>
+    <div id="outputs" class="pre">
+        <pre>
+            @Model.Outputs
+        </pre>
+    </div>
+    <div class="copyButton" title="Kopírovat" onclick="copyData(outputs)">Kopírovat</div>
+    <div id="afterCopy">
+        Text byl zkopírován
+    </div>
 </div>
 
-@if(ViewContext.HttpContext.Session.GetString(Helper.UserCookie) == null) return;
-
-@if(Model.ActiveTask != null){
-
-    <a href="/task/downloadInput/@Model.Id/">Stáhnout vstup</a>
-    <p>Odevzdat do: @Model.ActiveTask.TimeUntil</p>
-
-    <form action="/task/validateInput/@Model.Id" method="post" enctype="multipart/form-data">
-        <input type="file" name="UserFile" >
-        <input type="submit"/>
-    </form>
-    return;
-}
-<a href="/task/generate/@Model.Id">Vygenerovat vstup</a>
-
+<script type="text/javascript">
+    function copyData(id) {
+        navigator.clipboard.writeText(id.innerText);
+        let afterCopy = document.getElementById("afterCopy")
+        afterCopy.style.display = "block";
+        setTimeout(() =>{
+            afterCopy.style.display = "none";
+        },1500)
+    }
+</script>
 
 @if(Model.UserTaskResult == null) return;
 

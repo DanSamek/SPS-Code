@@ -37,6 +37,10 @@ namespace SPSCode.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Inputs")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MaxPoints")
                         .HasColumnType("int");
 
@@ -47,8 +51,15 @@ namespace SPSCode.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Outputs")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("TestCount")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Visible")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

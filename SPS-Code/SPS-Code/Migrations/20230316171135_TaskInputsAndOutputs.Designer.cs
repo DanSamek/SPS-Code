@@ -12,8 +12,8 @@ using SPS_Code.Data;
 namespace SPSCode.Migrations
 {
     [DbContext(typeof(CodeDbContext))]
-    [Migration("20230314130901_TaskFix")]
-    partial class TaskFix
+    [Migration("20230316171135_TaskInputsAndOutputs")]
+    partial class TaskInputsAndOutputs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,6 +40,10 @@ namespace SPSCode.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Inputs")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MaxPoints")
                         .HasColumnType("int");
 
@@ -47,6 +51,10 @@ namespace SPSCode.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Outputs")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

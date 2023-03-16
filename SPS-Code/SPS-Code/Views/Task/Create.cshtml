@@ -35,6 +35,13 @@
     <label for="Description">Popis zadání</label>
     <textarea id="Description" name="Description"></textarea>
 
+    <label for="Inputs">Přiklady vstupů</label><br />
+    <textarea id="Inputs" name="Inputs"></textarea>
+
+    <label for="Outputs">Příklady výstupů</label><br />
+    <i>Očekává se, že budou souviset se vstupy</i>
+    <textarea id="Outputs" name="Outputs"></textarea>
+
     <input type="submit"/>
     <p style="color: red;">@Model?.Message</p>
 </form>
@@ -42,4 +49,6 @@
 
 <script>
     var simplemde = new SimpleMDE({ element: document.getElementById("Description") });
+    new SimpleMDE({ element: document.getElementById("Outputs") });
+    new SimpleMDE({ element: document.getElementById("Inputs") });
 </script>

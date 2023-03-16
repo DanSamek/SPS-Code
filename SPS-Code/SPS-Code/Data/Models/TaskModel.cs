@@ -22,6 +22,12 @@ namespace SPS_Code.Data.Models
         public string Description { get; set; }
 
         [Required]
+        public string Inputs { get; set; }
+
+        [Required]
+        public string Outputs { get; set; }
+
+        [Required]
         public int MaxPoints { get; set; }
 
         [Required]
@@ -32,6 +38,10 @@ namespace SPS_Code.Data.Models
 
         [Required]
         public DateTime Created { get; set; }
+
+        [Required]
+        public bool Visible { get; set; } = true;
+
         /// <summary>
         /// Task create
         /// </summary>
@@ -50,9 +60,11 @@ namespace SPS_Code.Data.Models
                 Name = request.Name,
                 MaxPoints = request.MaxPoints,
                 Description = request.Description,
+                Inputs = request.Inputs,
+                Outputs = request.Outputs,
                 MaxSubmitTimeMinutes = request.MaxSubmitTimeMinutes,
                 TestCount = request.TestCount,
-                Created = DateTime.Now
+                Created = DateTime.Now,
             };
 
             // Save validator files and generator files

@@ -1,3 +1,7 @@
+:root {
+    --barva: rgb(30,144,255);
+}
+
 html {
   font-size: 14px;
 }
@@ -15,4 +19,37 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+
+
+/* Todo prenest do samostatneho souboru - Task*/
+.copyButton {
+    width: fit-content;
+    border: 1px solid;
+    background: var(--barva);
+    color: white;
+    padding: 4px 10px;
+    font-size: 11px;
+}
+
+#afterCopy {
+    display: none;
+    background: black;
+    color: white;
+    width: fit-content;
+    padding: 8px;
+    font-size: 11px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
+.pre {
+    font-size: .875em;
+    color: var(--barva);
+    word-wrap: break-word;
+    padding: 0 10PX;
+    border: 1PX SOLID;
+    border-radius: 4px;
+    white-space: pre-wrap;
 }

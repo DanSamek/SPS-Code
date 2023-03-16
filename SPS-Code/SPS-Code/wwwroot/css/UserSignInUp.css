@@ -1,8 +1,4 @@
-﻿:root {
-    --barva: rgb(30,144,255);
-}
-
-#secure-panel {
+﻿#secure-panel {
     text-align: center;
     box-shadow: 0 0 3px 1px gray;
     width: 340px;
@@ -45,6 +41,7 @@
             width: 100%;
             color: white;
             background: var(--barva);
+            transition: .3s;
         }
 
             .secure-form input:last-child:hover, #profil input:last-child:hover {

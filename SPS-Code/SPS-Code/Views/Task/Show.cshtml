@@ -1,15 +1,15 @@
 ﻿@model List<SPS_Code.Data.Models.TaskModel>
 
-@if(Model == null){
+@if(Model?.Count == 0){
     <p>Zatím zde žádná úloha není</p>
     return;
 }
 
-
 <div>
 @foreach (var task in Model)
 {
-    <div>
+        if (!task.Visible) continue;
+        <div>
         <p>@task.Name</p>
         <p>@task.MaxPoints</p>
         <p>@task.Created</p>
