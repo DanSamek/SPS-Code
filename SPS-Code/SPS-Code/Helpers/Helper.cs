@@ -45,9 +45,13 @@ namespace SPS_Code.Helpers
         }
 
 
-        public static bool GetLoggedUser(HttpContext context, out int? id)
+        public static bool GetLoggedUser(HttpContext context, out Guid? id)
         {
-            id = context.Session.GetInt32(UserCookie);
+            if (context.Session.GetString(UserCookie) != null)
+                id = Guid.Parse(context.Session.GetString(UserCookie));
+            else
+                id = null;
+
             return id != null;
         }
     }
