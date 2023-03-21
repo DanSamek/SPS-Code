@@ -1,29 +1,28 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace SPSCode.Migrations
 {
     /// <inheritdoc />
-    public partial class TaskFix : Migration
+    public partial class TaskVisibility : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<DateTime>(
-                name: "Created",
+            migrationBuilder.AddColumn<bool>(
+                name: "Visible",
                 table: "Tasks",
-                type: "datetime2",
+                type: "bit",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+                defaultValue: false);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Created",
+                name: "Visible",
                 table: "Tasks");
         }
     }

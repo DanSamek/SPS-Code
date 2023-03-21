@@ -30,6 +30,9 @@ namespace SPS_Code.Controllers
             rt.Name = task.Name;
             rt.Id = task.Id;
             rt.Description = task.Description;
+            rt.Inputs = task.Inputs;
+            rt.Outputs = task.Outputs;
+            rt.Visible = task.Visible;
             ActiveTask at = new();
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
             if (cookie == null) return View(rt);
@@ -62,11 +65,10 @@ namespace SPS_Code.Controllers
         }
 
         [Route("delete")]
-        public ActionResult Delete()
-        {
-            return View();
-        }
+        public ActionResult Delete() => Redirect("/");
 
+        [Route("hide")]
+        public ActionResult Hide() => Redirect("/");
 
         [HttpGet("/task/downloadInput/{taskId}")]
         public ActionResult Download(int taskId)
@@ -80,7 +82,6 @@ namespace SPS_Code.Controllers
             if (at.TaskId != taskId) return Redirect($"/task/{taskId}");
 
             byte[] fileData = System.IO.File.ReadAllBytes(at.Uri);
-
 
             return File(fileData, "application/force-download", "input.txt");
         }
