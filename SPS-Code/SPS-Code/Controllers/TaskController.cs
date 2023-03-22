@@ -22,7 +22,9 @@ namespace SPS_Code.Controllers
         public ActionResult Task(int id)
         {
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == id);
-            if (task == null) return Redirect("/");
+            if (task == null) return Redirect("/404");
+
+            if(!task.Visible) return Redirect("/404");
 
             ResponseTask rt = new();
             rt.MaxPoints = task.MaxPoints;
@@ -49,13 +51,16 @@ namespace SPS_Code.Controllers
         public ActionResult Show()
         {
             var tasks = _context.Tasks?.ToList();
+
+            Helper.GetUser(HttpContext, _context, out var user);
+            ViewData["admin"] = user?.IsAdmin;
             return View(tasks);
         }
 
         [Route("create")]
         public ActionResult Create()
         {
-            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/");
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
             return View(new TaskCreateRequest());
         }
 
@@ -68,17 +73,18 @@ namespace SPS_Code.Controllers
         [Route("delete")]
         public ActionResult Delete() => Redirect("/");
 
-        [Route("hide")]
-        [Route("unhide")]
+        [HttpGet("/task/unhide/{taskId}")]
+        [HttpGet("/task/hide/{taskId}")]
         public ActionResult Hide(int taskId)
         {
             var task = _context.Tasks?.FirstOrDefault(t => t.Id == taskId);
-            if(task == null) return Redirect("/");
-            if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/");
+            if(task == null) return Redirect("/404");
+            if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
             task.Visible = !task.Visible;
             _context.Tasks.Update(task);
-            return Redirect("/");
+            _context.SaveChanges();
+            return Redirect("/task/show");
         }
 
         [HttpGet("/task/downloadInput/{taskId}")]
@@ -99,12 +105,12 @@ namespace SPS_Code.Controllers
         {
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
 
-            if (cookie == null) return Redirect("/");
+            if (cookie == null) return Redirect("/404");
 
             if (ActiveTasks.ContainsKey(cookie)) return Redirect($"/task/{taskId}");
            
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
-            if (task == null) return Redirect("/error");
+            if (task == null) return Redirect("/404");
 
             var path = TaskModel.Generate(task);
 
@@ -124,10 +130,10 @@ namespace SPS_Code.Controllers
         public ActionResult ValidateInput(int taskId, [FromForm] IFormFile UserFile)
         {
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
-            if (cookie == null) return Redirect("/");
+            if (cookie == null) return Redirect("/404");
 
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
-            if (task == null || !ActiveTasks.ContainsKey(cookie)) return Redirect("/");
+            if (task == null || !ActiveTasks.ContainsKey(cookie)) return Redirect("/404");
 
             var at = ActiveTasks[cookie];
 
@@ -165,7 +171,7 @@ namespace SPS_Code.Controllers
         [Route("create")]
         public ActionResult CreatePost([FromForm] TaskCreateRequest taskCreateRequest)
         {
-            if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/");
+            if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
             var errorMessage = TaskModel.CreateAndSaveToDb(taskCreateRequest, _context, out var taskId);
             if (errorMessage != null) return View("Create", taskCreateRequest.SetError(errorMessage));

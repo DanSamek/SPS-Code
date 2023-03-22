@@ -12,8 +12,8 @@ using SPS_Code.Data;
 namespace SPSCode.Migrations
 {
     [DbContext(typeof(CodeDbContext))]
-    [Migration("20230316171135_TaskInputsAndOutputs")]
-    partial class TaskInputsAndOutputs
+    [Migration("20230322181906_MigrationFix")]
+    partial class MigrationFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,6 +60,9 @@ namespace SPSCode.Migrations
 
                     b.Property<int>("TestCount")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Visible")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

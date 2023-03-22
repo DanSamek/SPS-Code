@@ -4,7 +4,6 @@
 
 <div>
     @Html.Raw(Markdown.ToHtml(Model.Description))
-    @*More nested xdd*@
     @if (ViewContext.HttpContext.Session.GetString(Helper.UserCookie) != null) {
         @if (Model.ActiveTask != null)
         {
@@ -24,17 +23,11 @@
 
     <h3>Příklady</h3>
     <h4>Vstupy </h4>
-    <div id="inputs" class="pre">
-            @Model.Inputs
-    </div>
+    <div id="inputs" class="pre">@Model.Inputs</div>
     <div class="copyButton" title="Kopírovat" onclick="copyData(inputs)">Kopírovat</div>
 
     <h4>Výstupy</h4>
-    <div id="outputs" class="pre">
-        <pre>
-            @Model.Outputs
-        </pre>
-    </div>
+    <div id="outputs" class="pre">@Model.Outputs</div>
     <div class="copyButton" title="Kopírovat" onclick="copyData(outputs)">Kopírovat</div>
     <div id="afterCopy">
         Text byl zkopírován

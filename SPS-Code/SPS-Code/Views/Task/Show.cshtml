@@ -21,13 +21,17 @@
 
       @foreach (var task in Model)
       {
-        if (!task.Visible) continue;
+          if (!task.Visible && (ViewData["admin"] == null || !(bool)ViewData["admin"])) continue;
           <div>
               <p>@task.Name</p>
               <p>@task.MaxPoints bodů</p>
               <p>@task.MaxSubmitTimeMinutes min.</p>
               <p>@task.Created.ToShortDateString()</p>
               <a href="/task/@task.Id"><img src="~/img/info.png"></a>
+                @if (ViewData["admin"] != null && (bool)ViewData["admin"]){
+                    <a href="/task/hide/@task.Id">Skrýt úlohu</a>
+                    <a href="/task/unhide/@task.Id">Odkrýt úlohu</a>
+              }
           </div>
       }
   }
