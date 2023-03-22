@@ -55,6 +55,7 @@ namespace SPS_Code.Controllers
         [Route("create")]
         public ActionResult Create()
         {
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/");
             return View(new TaskCreateRequest());
         }
 
@@ -68,21 +69,28 @@ namespace SPS_Code.Controllers
         public ActionResult Delete() => Redirect("/");
 
         [Route("hide")]
-        public ActionResult Hide() => Redirect("/");
+        [Route("unhide")]
+        public ActionResult Hide(int taskId)
+        {
+            var task = _context.Tasks?.FirstOrDefault(t => t.Id == taskId);
+            if(task == null) return Redirect("/");
+            if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/");
+
+            task.Visible = !task.Visible;
+            _context.Tasks.Update(task);
+            return Redirect("/");
+        }
 
         [HttpGet("/task/downloadInput/{taskId}")]
         public ActionResult Download(int taskId)
         {
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
-
             if(cookie == null || !ActiveTasks.ContainsKey(cookie)) return Redirect("/");
            
             var at = ActiveTasks[cookie];
-
             if (at.TaskId != taskId) return Redirect($"/task/{taskId}");
 
             byte[] fileData = System.IO.File.ReadAllBytes(at.Uri);
-
             return File(fileData, "application/force-download", "input.txt");
         }
 
@@ -127,7 +135,6 @@ namespace SPS_Code.Controllers
 
             var user = _context.Users.Include(x => x.Tasks).FirstOrDefault(x => x.Id == cookie);
             
-
             var taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == taskId);
 
             if (taskResult == null)
@@ -158,6 +165,8 @@ namespace SPS_Code.Controllers
         [Route("create")]
         public ActionResult CreatePost([FromForm] TaskCreateRequest taskCreateRequest)
         {
+            if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/");
+
             var errorMessage = TaskModel.CreateAndSaveToDb(taskCreateRequest, _context, out var taskId);
             if (errorMessage != null) return View("Create", taskCreateRequest.SetError(errorMessage));
 

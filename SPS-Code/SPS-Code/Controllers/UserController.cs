@@ -3,7 +3,6 @@ using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Data;
 using SPS_Code.Data.Models;
 using SPS_Code.Helpers;
-using bcrypt = BCrypt.Net.BCrypt;
 
 namespace SPS_Code.Controllers
 {

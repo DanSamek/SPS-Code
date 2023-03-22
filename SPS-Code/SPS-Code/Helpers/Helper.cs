@@ -1,7 +1,7 @@
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
+using SPS_Code.Data;
 using SPS_Code.Data.Models;
+using System.Reflection;
 
 namespace SPS_Code.Helpers
 {
@@ -44,15 +44,23 @@ namespace SPS_Code.Helpers
             return true;
         }
 
-
         public static bool GetLoggedUser(HttpContext context, out Guid? id)
         {
-            if (context.Session.GetString(UserCookie) != null)
-                id = Guid.Parse(context.Session.GetString(UserCookie));
-            else
-                id = null;
-
+            var cookie = context.Session.GetString(UserCookie);
+            if (cookie != null) id = Guid.Parse(cookie);
+            else id = null;
             return id != null;
+        }
+
+        public static bool GetUser(HttpContext httpContext, CodeDbContext dbContext, out UserModel user, bool adminCheck = false)
+        {
+            user = null;
+            if(!GetLoggedUser(httpContext, out Guid? id)) return false;
+            user = dbContext.Users.Include(x => x.Tasks).FirstOrDefault(u => u.Id == id.Value.ToString());
+
+            if (user == null) return false;
+            if (!user.IsAdmin && adminCheck) return false;
+            return true;
         }
     }
     public static class TmpFolder
