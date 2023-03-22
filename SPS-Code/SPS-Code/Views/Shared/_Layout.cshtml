@@ -32,13 +32,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Task" asp-action="Show">Všechna zadání</a>
                         </li>
-                        @*
                         @if (loggedID != null) {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Profil</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Profile">Profil</a>
                             </li>
                         }
-                        *@
                     </ul>
                     <ul class="navbar-nav">
 
@@ -62,7 +60,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - SPS-Code
+            &copy; @DateTime.Now.Year SPŠ Trutnov 
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
