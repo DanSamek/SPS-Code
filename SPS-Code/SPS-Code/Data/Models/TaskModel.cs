@@ -1,3 +1,6 @@
+using Azure.Core;
+using Markdig.Extensions.TaskLists;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Helpers;
@@ -109,15 +112,19 @@ namespace SPS_Code.Data.Models
         /// <summary>
         /// Validation of user input, when mistake is done by user output, it will calculate total points for user
         /// </summary>
-        public static int Validate(IFormFile userOutput, TaskModel task, string generatedFileInput)
+        public static int Validate(IFormFile userOutput, TaskModel task, string generatedFilePath)
         {
             using var stream = userOutput.OpenReadStream();
             using var streamReader = new StreamReader(stream);
             var userDatai = streamReader.ReadToEnd();
 
+
+            using var streamReader2 = new StreamReader(generatedFilePath);
+            var inputData = streamReader2.ReadToEnd();
+
             // Run validation script
             var baseDir = Directory.GetCurrentDirectory();
-            var proc = System.Diagnostics.Process.Start($@"{baseDir}\Tasks\{task?.Name}\validator.exe", generatedFileInput);
+            var proc = System.Diagnostics.Process.Start($@"{baseDir}\Tasks\{task?.Name}\validator.exe", inputData);
             proc.StartInfo.RedirectStandardOutput = true;
 
             int tRight = 0;
@@ -139,6 +146,44 @@ namespace SPS_Code.Data.Models
                 }
             }
             return (int)((double)tRight/task.TestCount * task.MaxPoints);
+        }
+
+        public static string? Edit(TaskEditRequest request, CodeDbContext context, int taskId)
+        {
+            var task = context.Tasks.FirstOrDefault(t => t.Id == taskId);
+
+            if (!Helper.CheckAllParams(request)) return "Něco nebylo vyplněno!";
+            if(task == null) return "Taková úloha neexistuje!";
+
+            task.Name =  request.Name;
+            task.MaxPoints = request.MaxPoints;
+            task.Description = request.Description;
+            task.Inputs = request.Inputs;    
+            task.Outputs = request.Outputs;
+            task.MaxSubmitTimeMinutes = request.MaxSubmitTimeMinutes;
+            task.TestCount = request.TestCount;
+
+            if (!Directory.Exists($"./Tasks/{task.Name}")) Directory.CreateDirectory($"./Tasks/{task.Name}");
+            if (request.Generator != null)
+            {
+                string genExt = Path.GetExtension(request.Generator.FileName);
+                if (genExt != ".exe") return "Je potřeba, aby generátor byl .exe soubor!";
+
+                using var generatorFileStream = File.Create($"./Tasks/{task.Name}/generator.exe");
+                request.Generator.CopyTo(generatorFileStream);
+            }
+            if(request.Validator != null)
+            {
+                string valExt = Path.GetExtension(request.Validator.FileName);
+                if (valExt != ".exe") return "Je potřeba, aby validátor byl .exe soubor!";
+
+                using var validatorFileStream = File.Create($"./Tasks/{task.Name}/validator.exe");
+                request.Validator.CopyTo(validatorFileStream);
+            }
+
+            context.Tasks.Update(task);
+            context.SaveChanges();
+            return null;
         }
     }
 }

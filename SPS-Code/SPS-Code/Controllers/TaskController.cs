@@ -13,6 +13,11 @@ namespace SPS_Code.Controllers
         // User id : ActiveTask
         static Dictionary<string, ActiveTask> ActiveTasks = new();
         private CodeDbContext _context;
+
+        // for multiple requests
+        private readonly object _lock = new object();
+        private readonly object _lock2 = new object();
+
         public TaskController(CodeDbContext context)
         {
             _context = context;
@@ -112,7 +117,12 @@ namespace SPS_Code.Controllers
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
             if (task == null) return Redirect("/404");
 
-            var path = TaskModel.Generate(task);
+            // For multiple requests
+            string path;
+            lock (_lock)
+            {
+                path = TaskModel.Generate(task);
+            }
 
             ActiveTask at = new()
             {
@@ -137,7 +147,11 @@ namespace SPS_Code.Controllers
 
             var at = ActiveTasks[cookie];
 
-            var points = TaskModel.Validate(UserFile, task, at.Uri);
+            int points;
+            lock(_lock2) 
+            {
+                points = TaskModel.Validate(UserFile, task, at.Uri);
+            }
 
             var user = _context.Users.Include(x => x.Tasks).FirstOrDefault(x => x.Id == cookie);
             
@@ -176,6 +190,41 @@ namespace SPS_Code.Controllers
             var errorMessage = TaskModel.CreateAndSaveToDb(taskCreateRequest, _context, out var taskId);
             if (errorMessage != null) return View("Create", taskCreateRequest.SetError(errorMessage));
 
+            return Redirect($"/task/{taskId}");
+        }
+
+
+        [HttpGet("/task/edit/{taskId}")]
+        public ActionResult Edit(int taskId)
+        {
+            // If no admin, redirect
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
+
+            var data = _context.Tasks.FirstOrDefault(t => t.Id == taskId);
+            if(data == null) return Redirect("/404");
+
+            var ter = new TaskEditRequest()
+            {
+                Description = data.Description,
+                Outputs = data.Outputs,
+                Inputs = data.Inputs,
+                MaxSubmitTimeMinutes = data.MaxSubmitTimeMinutes,
+                Name = data.Name,
+                MaxPoints = data.MaxPoints,
+                TestCount = data.TestCount,
+                Id = data.Id
+            };
+          
+            return View("Edit", ter);
+        }
+
+        [HttpPost("/task/edit/{taskId}")]
+        public ActionResult EditPost(int taskId, [FromForm] TaskEditRequest editRequest)
+        {
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
+
+            var succeed = TaskModel.Edit(editRequest, _context, taskId);
+            if (succeed != null) return View("Edit", editRequest.SetError("Nastala neoèekávaná chyba!"));
             return Redirect($"/task/{taskId}");
         }
     }
