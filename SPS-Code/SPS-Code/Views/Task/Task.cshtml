@@ -3,7 +3,9 @@
 @model SPS_Code.Controllers.ResponseTask
 
 <div>
-    @Html.Raw(Markdown.ToHtml(Model.Description))
+    <h1>@Model.Name</h1>
+
+    @Html.Raw(Markdown.ToHtml(Model.Description));
     @if (ViewContext.HttpContext.Session.GetString(Helper.UserCookie) != null) {
         @if (Model.ActiveTask != null)
         {
