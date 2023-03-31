@@ -19,7 +19,9 @@
         }
         else
         {
-            <a href="/task/generate/@Model.Id">Vygenerovat vstup</a>
+            <div id="generate">
+                <a href="/task/generate/@Model.Id">  <img src="/img/generate.png"> Vygenerovat vstup</a>
+            </div>
         }
     }
 
@@ -28,7 +30,7 @@
     <div id="inputs" class="pre">@Model.Inputs</div>
     <div class="copyButton" title="Kopírovat" onclick="copyData(inputs)">Kopírovat</div>
 
-    <h4>Výstupy</h4>
+    <h4 style="padding-top: 10px;">Výstupy</h4>
     <div id="outputs" class="pre">@Model.Outputs</div>
     <div class="copyButton" title="Kopírovat" onclick="copyData(outputs)">Kopírovat</div>
     <div id="afterCopy">
@@ -50,8 +52,8 @@
 @if(Model.UserTaskResult == null) return;
 
 
-<div>
-    <h2>Výsledky/Informace</h2>
+<div class="info">
+    <h2>Informace</h2>
     <p>Počet pokusů:  @Model.UserTaskResult.AttemptsCount</p>
     <p>Maximální počet bodů:  @Model.UserTaskResult.MaxPointsObtained</p>
     <p>Poslední pokus:  @Model.UserTaskResult.LastAttemptTime</p>
