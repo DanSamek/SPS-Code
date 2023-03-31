@@ -175,8 +175,9 @@ namespace SPS_Code.Controllers
                 taskResult.MaxPointsObtained = Math.Max(taskResult.MaxPointsObtained, points);
             }
 
-            ActiveTasks.Remove(cookie);
             _context.Users.Update(user);
+            ActiveTasks.Remove(cookie);
+            _context.SaveChanges();
             return Redirect($"/task/{task.Id}");
         }
 
@@ -226,6 +227,18 @@ namespace SPS_Code.Controllers
             var succeed = TaskModel.Edit(editRequest, _context, taskId);
             if (succeed != null) return View("Edit", editRequest.SetError("Nastala neoèekávaná chyba!"));
             return Redirect($"/task/{taskId}");
+        }
+
+        [HttpGet("/task/results/{taskId}")]
+        public ActionResult Results(int taskId)
+        {
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
+            var cookie = HttpContext.Session.GetString(Helper.UserCookie);
+            var task = _context.Tasks.FirstOrDefault(t => t.Id == taskId);
+            if(task == null) return Redirect("/404");
+
+            var userData = _context.Users?.Include(x => x.Tasks).Where(x => x.Tasks.Any(x => x.Task.Id == taskId)).ToList();
+            return View(userData);
         }
     }
 

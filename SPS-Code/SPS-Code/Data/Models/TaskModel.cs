@@ -1,6 +1,3 @@
-using Azure.Core;
-using Markdig.Extensions.TaskLists;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Helpers;
@@ -118,19 +115,20 @@ namespace SPS_Code.Data.Models
             using var streamReader = new StreamReader(stream);
             var userDatai = streamReader.ReadToEnd();
 
-
             using var streamReader2 = new StreamReader(generatedFilePath);
             var inputData = streamReader2.ReadToEnd();
 
             // Run validation script
             var baseDir = Directory.GetCurrentDirectory();
-            var proc = System.Diagnostics.Process.Start($@"{baseDir}\Tasks\{task?.Name}\validator.exe", inputData);
+            var proc = System.Diagnostics.Process.Start($@"{baseDir}\Tasks\{task?.Name}\validator.exe");
             proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.RedirectStandardInput = true;
 
             int tRight = 0;
 
             if (proc.Start())
             {
+                proc.StandardInput.WriteLine(inputData);
                 string dataI = proc.StandardOutput.ReadToEnd();
                 var data = dataI.Split("\n");
                 var userData = userDatai.Split("\n");

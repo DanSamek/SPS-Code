@@ -5,7 +5,7 @@
 <div>
     <h1>@Model.Name</h1>
 
-    @Html.Raw(Markdown.ToHtml(Model.Description));
+    @Html.Raw(Markdown.ToHtml(Model.Description))
     @if (ViewContext.HttpContext.Session.GetString(Helper.UserCookie) != null) {
         @if (Model.ActiveTask != null)
         {
