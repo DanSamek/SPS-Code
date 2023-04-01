@@ -1,0 +1,22 @@
+﻿.task-overview > div {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 80px 80px 80px 70px;
+}
+.task-overview > div > *:last-child {
+    margin-right: -10px;
+}
+@media screen and (max-width: 1000px) {
+    .task-overview > div {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 70px 70px 70px 70px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .task-overview > div *:nth-child(n+6):nth-child(-n+8) {
+        display: none;
+    }
+    .task-overview > div {
+        grid-template-columns: 2fr 1fr 1fr 1fr 50px;
+    }
+}

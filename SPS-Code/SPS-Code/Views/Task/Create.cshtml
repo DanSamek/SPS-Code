@@ -3,35 +3,43 @@
 @{
     ViewData["Title"] = "Vytvoření úlohy";
 }
+
+@section Style {
+    <link rel="stylesheet" href="~/css/TaskEdit.css">
+}
+
 <link rel="stylesheet" href="~/css/simplemde.min.css">
 <script src="~/js/simplemde.min.js"></script>
 
 
 <form action="/task/create" method="post" enctype="multipart/form-data">
-    <label for="Name">Název úlohy</label>
-    <input type="text" name="Name"/> 
-    <br />
-    <p></p>
-    <label for="MaxPoints">Maximální počet bodů</label>
-    <input type="number" name="MaxPoints" />
-    <br />
-    <p></p>
-    <label for="TestCount">Počet testů, který vygeneruje generátor (určeno pro hodnocení)</label>
-    <input type="number" name="TestCount" />
-    <br />
-    <p></p>
-    <label for="MaxSubmitTimeMinutes">Počet minut na odevzdání vygenerovaného vstupu</label>
-    <input type="number" name="MaxSubmitTimeMinutes" />
-    <br />
-    <p></p>
-    <label for="Generator">Generátor vstupu</label>
-    <input type="file" name="Generator"/>
-    <br />
-    <p></p>
-    <label for="Validator">Validátor uživatelského výstupu</label>
-    <input type="file" name="Validator" />
-    <br />
-    <p></p>
+    <div>
+        <div>
+            <label for="Name">Název úlohy</label>
+            <input type="text" name="Name" placeholder="Název..." /> 
+        </div>
+        <div>
+            <label for="MaxPoints">Maximální počet bodů</label>
+            <input type="number" name="MaxPoints" placeholder="Max. počet bodů..." />
+        </div>
+        <div>
+            <label for="TestCount">Počet testů, který vygeneruje generátor (určeno pro hodnocení)</label>
+            <input type="number" name="TestCount" placeholder="Test Count..." />
+        </div>
+        <div>
+            <label for="MaxSubmitTimeMinutes">Počet minut na odevzdání vygenerovaného vstupu</label>
+            <input type="number" name="MaxSubmitTimeMinutes" placeholder="Max. počet minut..." />
+        </div>
+        <div>
+            <label for="Generator">Generátor vstupu</label>
+            <input type="file" name="Generator"/>
+        </div>
+        <div>
+            <label for="Validator">Validátor uživatelského výstupu</label>
+            <input type="file" name="Validator" />
+        </div>
+    </div>
+
     <label for="Description">Popis zadání</label>
     <textarea id="Description" name="Description"></textarea>
 

@@ -55,7 +55,7 @@ namespace SPS_Code.Data.Models
             return null;
         }
 
-        public static string? ValidateAndLogin(UserRequest request, CodeDbContext context, HttpContext httpcontext )
+        public static string? ValidateAndLogin(UserRequest request, CodeDbContext context, HttpContext httpcontext)
         {
             if (!Helper.CheckAllParams(request)) return "Něco nebylo vyplněno!";
 
@@ -65,6 +65,10 @@ namespace SPS_Code.Data.Models
             if (!bcrypt.Verify(request.Password, user.Password)) return "Špatné heslo!";
 
             httpcontext.Session.SetString(Helper.UserCookie, user.Id);
+
+            if (user.IsAdmin)
+                httpcontext.Session.SetInt32(Helper.AdminCheck, 1);
+
             return null;
         }
     }

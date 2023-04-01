@@ -21,7 +21,8 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 @{
-                    Helper.GetLoggedUser(ViewContext.HttpContext, out var loggedID);
+                    bool userLogged = Helper.GetLoggedUser(ViewContext.HttpContext, out _);
+                    bool admin = userLogged ? Helper.CheckIfAdmin(ViewContext.HttpContext) : false;
                 }
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -32,18 +33,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Task" asp-action="Show">Všechna zadání</a>
                         </li>
-                        @*
-                        @if (loggedID != null) {
+                        @if (admin)
+                        {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Profile">Profil</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Task" asp-action="Create">Nová Úloha</a>
                             </li>
                         }
-                        *@
                     </ul>
                     <ul class="navbar-nav">
-
+                        @if (userLogged)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="">Profil</a>
+                            </li>
+                        }
                         <li class="nav-item">
-                            @if (loggedID == null){
+                            @if (!userLogged){
                                 <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Přihlásit se</a>
                             } else {
                                 <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Logout">Odhlásit se</a>

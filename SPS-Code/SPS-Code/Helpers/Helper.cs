@@ -18,6 +18,11 @@ namespace SPS_Code.Helpers
         public static string LoginSuccessful => "loginSuccessful";
 
         /// <summary>
+        /// Název cookie pro kontrolu zda je uživatel admin -> kvůli stylům
+        /// </summary>
+        public static string AdminCheck => "is-admin";
+
+        /// <summary>
         /// Počet minut, po kterých se vygenerovaný vstup smaže
         /// </summary>
         public static int MinutesToDelete => 15;
@@ -49,7 +54,14 @@ namespace SPS_Code.Helpers
             var cookie = context.Session.GetString(UserCookie);
             if (cookie != null) id = Guid.Parse(cookie);
             else id = null;
+            
             return id != null;
+        }
+
+        public static bool CheckIfAdmin(HttpContext context)
+        {
+            if (context.Session.GetInt32(AdminCheck) == 1) return true;
+            else return false;
         }
 
         public static bool GetUser(HttpContext httpContext, CodeDbContext dbContext, out UserModel user, bool adminCheck = false)

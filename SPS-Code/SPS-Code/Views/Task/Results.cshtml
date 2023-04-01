@@ -1,15 +1,19 @@
 ﻿@using SPS_Code.Data.Models;
 @model List<UserModel>
 
-<table>
-    <tr>
-        <td>Jméno a Příjmení</td>
-        <td>Získané body / Max</td>
-    </tr>
-@foreach(var um in Model){    
-    <tr>
-        <td>@um.FirstName @um.LastName</td>
-        <td>@um.Tasks[0].MaxPointsObtained/@um.Tasks[0].Task.MaxPoints</td>
-    </tr>
+@section Style {
+    <link rel="stylesheet" href="~/css/Results.css">
 }
-</table>
+
+<div id="res">
+    <div>
+        <div>Jméno a Příjmení</div>
+        <div>Získané body / Max</div>
+    </div>
+@foreach(var um in Model){    
+    <div>
+        <div>@um.FirstName @um.LastName</div>
+        <div>@um.Tasks[0].MaxPointsObtained/@um.Tasks[0].Task.MaxPoints b.</div>
+    </div>
+}
+</div>
