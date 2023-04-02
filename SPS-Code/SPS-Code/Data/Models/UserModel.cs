@@ -1,4 +1,6 @@
-﻿using SPS_Code.Controllers.RequestModels;
+﻿using Azure.Core;
+using Microsoft.IdentityModel.Tokens;
+using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Helpers;
 using System.ComponentModel.DataAnnotations;
 using bcrypt = BCrypt.Net.BCrypt;
@@ -68,6 +70,31 @@ namespace SPS_Code.Data.Models
 
             if (user.IsAdmin)
                 httpcontext.Session.SetInt32(Helper.AdminCheck, 1);
+
+            return null;
+        }
+
+        public static string? ValidateAndEdit(UserModel user, UserEditRequest req, CodeDbContext context)
+        {
+            if (req.FirstName.IsNullOrEmpty() || req.LastName.IsNullOrEmpty()) return "Něco nebylo vyplněno!";
+            
+            user.FirstName = req.FirstName;
+            user.LastName = req.LastName;
+
+            context.SaveChanges();
+
+            return null;
+        }
+
+        public static string? ValidateAndChangePassword(UserModel user, UserPasswordRequest req, CodeDbContext context)
+        {
+            if (!bcrypt.Verify(req.Password, user.Password)) return "Špatné heslo!";
+
+            if (req.NewPassword != req.NewPasswordCheck) return "Nová hesla se neshodují!";
+
+            user.Password = bcrypt.HashPassword(req.NewPassword);
+
+            context.SaveChanges();
 
             return null;
         }

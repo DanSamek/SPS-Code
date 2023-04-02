@@ -68,7 +68,7 @@ namespace SPS_Code.Helpers
         {
             user = null;
             if(!GetLoggedUser(httpContext, out Guid? id)) return false;
-            user = dbContext.Users.Include(x => x.Tasks).FirstOrDefault(u => u.Id == id.Value.ToString());
+            user = dbContext.Users.Include(x => x.Tasks).ThenInclude(x => x.Task).FirstOrDefault(u => u.Id == id.Value.ToString());
 
             if (user == null) return false;
             if (!user.IsAdmin && adminCheck) return false;

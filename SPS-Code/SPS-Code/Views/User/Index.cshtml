@@ -1,11 +1,58 @@
-﻿@using SPS_Code.Helpers
+﻿@using SPS_Code.Data.Models;
+@using SPS_Code.Helpers
+@model UserModel
 @{
     var value = TempData[Helper.LoginSuccessful];
+}
+
+@section Style {
+    <link rel="stylesheet" href="~/css/User.css">
+    <link rel="stylesheet" href="~/css/TaskDetail.css">
 }
 
 @if (value != null)
 {
     <div class="alert alert-success alert-dismissible">
         <span>Přihlášení proběhlo úspěšně!</span>
+    </div>
+}
+
+<div id="edit">
+    <form action="/user/edit" method="post">
+        <input type="text" name="Email" value="@Model.Email" disabled>
+        <input type="text" name="FirstName" value="@Model.FirstName">
+        <input type="text" name="LastName" value="@Model.LastName">
+        <input type="submit" value="Odeslat"/>
+    </form>
+    <form action="/user/chpasswd" method="post">
+        <input type="password" name="Password" placeholder="Stávající heslo..." />
+        <input type="password" name="NewPassword" placeholder="Nové heslo..." />
+        <input type="password" name="NewPasswordCheck" placeholder="Kontrolní heslo..." />
+        <input type="submit" value="Odeslat"/>
+    </form>
+</div>
+
+@if (Model?.Tasks?.Count > 0)
+{
+    <div class="info">
+        <h2>Úlohy</h2>
+
+        <div>
+            <p>Poslední pokus</p>
+            <p>Počet pokusů</p>
+            <p>Max. počet bodů</p>
+        </div>
+        <div>
+            @foreach (var task in Model.Tasks)
+            {
+                <p>@task.LastAttemptTime</p>
+                <p>@task.AttemptsCount</p>
+                <p>@task.MaxPointsObtained / @task.Task.MaxPoints</p>
+                @if (task.MaxPointsObtained == task.Task.MaxPoints)
+                {
+                    <img src="~/img/done.png" />
+                }
+            }
+        </div>
     </div>
 }

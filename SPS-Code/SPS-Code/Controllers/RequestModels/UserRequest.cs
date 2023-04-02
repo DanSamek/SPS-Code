@@ -13,4 +13,18 @@
         public string LastName { get; set; }
         public string PasswordCheck { get; set; }
     }
+
+    public class UserEditRequest
+    {
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+
+    public class UserPasswordRequest
+    {
+        public string Password { get; set; }
+        public string NewPassword { get; set; }
+        public string NewPasswordCheck { get; set; }
+    }
 }

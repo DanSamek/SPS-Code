@@ -18,7 +18,9 @@ namespace SPS_Code.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            if (!Helper.GetUser(HttpContext,_context, out var user)) { return Redirect("/"); }
+
+            return View(user);
         }
 
         [Route("login")]
@@ -59,6 +61,30 @@ namespace SPS_Code.Controllers
         {
             HttpContext.Session.Clear();
             return Redirect("/");
+        }
+
+        [HttpPost]
+        [Route("edit")]
+        public ActionResult EditUser([FromForm] UserEditRequest editRequest)
+        {
+            if (!Helper.GetUser(HttpContext, _context, out var user)) { return Redirect("/"); }
+
+            var errorMessage = UserModel.ValidateAndEdit(user, editRequest, _context);
+            if (errorMessage == null) return Redirect("/user");
+
+            return Redirect("/user");
+        }
+
+        [HttpPost]
+        [Route("chpasswd")]
+        public ActionResult ChangePassword([FromForm] UserPasswordRequest editRequest)
+        {
+            if (!Helper.GetUser(HttpContext, _context, out var user)) { return Redirect("/"); }
+
+            var errorMessage = UserModel.ValidateAndChangePassword(user, editRequest, _context);
+            if (errorMessage == null) return Redirect("/user");
+
+            return Redirect("/user");
         }
     }
 }
