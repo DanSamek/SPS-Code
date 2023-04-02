@@ -149,7 +149,7 @@ namespace SPS_Code.Controllers
 
             //TO-DO -> aby se uživateli rovnou pøièetl i pokus
             TaskModel.RemoveAllExpiredTasks(ActiveTasks);
-            if (!ActiveTasks.ContainsKey(cookie)) return Redirect($"/task/{taskId}");
+            if (!ActiveTasks.ContainsKey(cookie)) { TempData[Helper.ErrorToken] = "Èas pro odevzdání vypršel!"; return Redirect($"/task/{taskId}"); }
 
             var at = ActiveTasks[cookie];
 
@@ -184,6 +184,8 @@ namespace SPS_Code.Controllers
             _context.Users.Update(user);
             ActiveTasks.Remove(cookie);
             _context.SaveChanges();
+
+            TempData[Helper.SuccessToken] = "Odevzdání probìhlo vpoøádku!";
             return Redirect($"/task/{task.Id}");
         }
 
@@ -195,8 +197,9 @@ namespace SPS_Code.Controllers
             if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
             var errorMessage = TaskModel.CreateAndSaveToDb(taskCreateRequest, _context, out var taskId);
-            if (errorMessage != null) return View("Create", taskCreateRequest.SetError(errorMessage));
+            if (errorMessage != null) { TempData[Helper.ErrorToken] = errorMessage; return View("Create", taskCreateRequest.SetError(errorMessage)); }
 
+            TempData[Helper.SuccessToken] = "Úloha byla úspìšnì vytvoøena!";
             return Redirect($"/task/{taskId}");
         }
 
@@ -221,7 +224,7 @@ namespace SPS_Code.Controllers
                 TestCount = data.TestCount,
                 Id = data.Id
             };
-          
+
             return View("Edit", ter);
         }
 
@@ -231,7 +234,9 @@ namespace SPS_Code.Controllers
             if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
             var succeed = TaskModel.Edit(editRequest, _context, taskId);
-            if (succeed != null) return View("Edit", editRequest.SetError("Nastala neoèekávaná chyba!"));
+            if (succeed != null) { TempData[Helper.ErrorToken] = "Nastala neoèekávaná chyba!"; return View("Edit", editRequest.SetError("Nastala neoèekávaná chyba!")); }
+
+            TempData[Helper.SuccessToken] = "Úloha byla úspìšnì upravena!";
             return Redirect($"/task/{taskId}");
         }
 

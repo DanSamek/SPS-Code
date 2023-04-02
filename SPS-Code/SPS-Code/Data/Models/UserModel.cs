@@ -88,6 +88,8 @@ namespace SPS_Code.Data.Models
 
         public static string? ValidateAndChangePassword(UserModel user, UserPasswordRequest req, CodeDbContext context)
         {
+            if (req.Password.IsNullOrEmpty() || req.NewPassword.IsNullOrEmpty() || req.NewPasswordCheck.IsNullOrEmpty()) return "Něco nebylo vyplněno!";
+
             if (!bcrypt.Verify(req.Password, user.Password)) return "Špatné heslo!";
 
             if (req.NewPassword != req.NewPasswordCheck) return "Nová hesla se neshodují!";

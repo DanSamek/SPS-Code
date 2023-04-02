@@ -28,6 +28,16 @@ namespace SPS_Code.Helpers
         public static int MinutesToDelete => 15;
 
         /// <summary>
+        /// Error popup pro TempData
+        /// </summary>
+        public static string ErrorToken => "error-token";
+
+        /// <summary>
+        /// Success popup pro TempData
+        /// </summary>
+        public static string SuccessToken => "success-token";
+
+        /// <summary>
         /// Pokud něco bude prázdné v objektu, vrátí null
         /// Vynechá to prvky, které budou mít <see cref="NotRequired"/> 
         /// </summary>

@@ -1,20 +1,10 @@
 ﻿@using SPS_Code.Data.Models;
 @using SPS_Code.Helpers
 @model UserModel
-@{
-    var value = TempData[Helper.LoginSuccessful];
-}
 
 @section Style {
     <link rel="stylesheet" href="~/css/User.css">
     <link rel="stylesheet" href="~/css/TaskDetail.css">
-}
-
-@if (value != null)
-{
-    <div class="alert alert-success alert-dismissible">
-        <span>Přihlášení proběhlo úspěšně!</span>
-    </div>
 }
 
 <div id="edit">
