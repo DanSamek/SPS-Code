@@ -19,14 +19,22 @@
 
 <div id="edit">
     <form action="/user/edit" method="post">
+        <h3>Změna údajů</h3>
+        <label for="Email">E-mail</label>
         <input type="text" name="Email" value="@Model.Email" disabled>
+        <label for="FirstName">Jméno</label>
         <input type="text" name="FirstName" value="@Model.FirstName">
+        <label for="LastName">Příjmení</label>
         <input type="text" name="LastName" value="@Model.LastName">
         <input type="submit" value="Odeslat"/>
     </form>
     <form action="/user/chpasswd" method="post">
+        <h3>Změna hesla</h3>
+        <label for="Password">Staré heslo</label>
         <input type="password" name="Password" placeholder="Stávající heslo..." />
+        <label for="NewPassword">Nové heslo</label>
         <input type="password" name="NewPassword" placeholder="Nové heslo..." />
+        <label for="NewPasswordCheck">Kontrolní heslo</label>
         <input type="password" name="NewPasswordCheck" placeholder="Kontrolní heslo..." />
         <input type="submit" value="Odeslat"/>
     </form>

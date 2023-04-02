@@ -6,6 +6,13 @@ br {
     display: none;
 }
 
+form {
+    padding: 10px 25px;
+    box-shadow: 0 0 6px 1px gray;
+    border: 1px solid lightgray;
+    border-radius: 15px;
+}
+
 form > div:first-child div:nth-child(n):nth-child(-n + 4) input {
     border: 1px solid #bbb;
     border-radius: 10px;
