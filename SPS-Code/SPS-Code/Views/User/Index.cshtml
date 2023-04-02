@@ -1,1 +1,11 @@
-﻿
+﻿@using SPS_Code.Helpers
+@{
+    var value = TempData[Helper.LoginSuccessful];
+}
+
+@if (value != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        <span>Přihlášení proběhlo úspěšně!</span>
+    </div>
+}

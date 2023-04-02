@@ -51,7 +51,7 @@ namespace SPS_Code.Controllers
             var errorMessage = UserModel.ValidateAndLogin(userRequest, _context, HttpContext);
             if (errorMessage != null) return View("Login", userRequest.SetError(errorMessage));
             TempData[Helper.LoginSuccessful] = true;
-            return Redirect("/");
+            return Redirect("/user");
         }
 
         [Route("logout")]

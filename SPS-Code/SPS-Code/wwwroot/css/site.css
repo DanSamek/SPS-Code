@@ -7,6 +7,18 @@ html {
   font-size: 14px;
 }
 
+footer {
+    z-index: 15;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+
+    text-align: center;
+    line-height: 50px;
+
+    background-color: white;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;

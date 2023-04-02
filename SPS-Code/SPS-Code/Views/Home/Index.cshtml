@@ -1,11 +1,12 @@
-﻿@using SPS_Code.Helpers
-@{
+﻿@{
     ViewData["Title"] = "Domů";
-    var value = TempData[Helper.LoginSuccessful];
 }
 
-@if(value != null){
-    <div class="alert alert-success alert-dismissible">
-        <span>Přihlášení proběhlo úspěšně!</span>
-    </div>
+@section Style {
+    <link rel="stylesheet" href="~/css/Index.css">
 }
+
+<h1>Vítej na <span>SPŠ-Code</span></h1>
+<p>Školním portálu plném zajímavých algoritmizačním úloh.</p>
+<a href="/task/show">Začni Zde <img src="~/img/click.png" /></a>
+
