@@ -1,1 +1,56 @@
-﻿
+﻿@using SPS_Code.Data.Models;
+@using SPS_Code.Helpers
+@model UserModel
+
+@section Style {
+    <link rel="stylesheet" href="~/css/User.css">
+    <link rel="stylesheet" href="~/css/TaskDetail.css">
+}
+
+<div id="edit">
+    <form action="/user/edit" method="post">
+        <h3>Změna údajů</h3>
+        <label for="Email">E-mail</label>
+        <input type="text" name="Email" value="@Model.Email" disabled>
+        <label for="FirstName">Jméno</label>
+        <input type="text" name="FirstName" value="@Model.FirstName">
+        <label for="LastName">Příjmení</label>
+        <input type="text" name="LastName" value="@Model.LastName">
+        <input type="submit" value="Odeslat"/>
+    </form>
+    <form action="/user/chpasswd" method="post">
+        <h3>Změna hesla</h3>
+        <label for="Password">Staré heslo</label>
+        <input type="password" name="Password" placeholder="Stávající heslo..." />
+        <label for="NewPassword">Nové heslo</label>
+        <input type="password" name="NewPassword" placeholder="Nové heslo..." />
+        <label for="NewPasswordCheck">Kontrolní heslo</label>
+        <input type="password" name="NewPasswordCheck" placeholder="Kontrolní heslo..." />
+        <input type="submit" value="Odeslat"/>
+    </form>
+</div>
+
+@if (Model?.Tasks?.Count > 0)
+{
+    <div class="info">
+        <h2>Úlohy</h2>
+
+        <div>
+            <p>Poslední pokus</p>
+            <p>Počet pokusů</p>
+            <p>Max. počet bodů</p>
+        </div>
+        <div>
+            @foreach (var task in Model.Tasks)
+            {
+                <p>@task.LastAttemptTime</p>
+                <p>@task.AttemptsCount</p>
+                <p>@task.MaxPointsObtained / @task.Task.MaxPoints</p>
+                @if (task.MaxPointsObtained == task.Task.MaxPoints)
+                {
+                    <img src="~/img/done.png" />
+                }
+            }
+        </div>
+    </div>
+}

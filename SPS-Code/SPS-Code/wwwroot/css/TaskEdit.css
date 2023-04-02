@@ -1,0 +1,110 @@
+﻿input {
+    display: block;
+}
+
+br {
+    display: none;
+}
+
+form {
+    padding: 10px 25px;
+    box-shadow: 0 0 6px 1px gray;
+    border: 1px solid lightgray;
+    border-radius: 15px;
+}
+
+form > div:first-child div:nth-child(n):nth-child(-n + 4) input {
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    padding: 2px 7px;
+}
+
+form > div:first-child {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+form > div:first-child div {
+    padding-top: 10px;
+}
+
+form > div:first-child label {
+    font-size: 0.8em;
+}
+
+form > div:first-child div:first-child {
+    font-size: 30px;
+    font-weight: bold;
+    border-radius: 20px;
+    grid-column: 1/7;
+}
+form > div:first-child div:first-child input {
+    border-color: rgb(30,144,255);
+}
+form > div:first-child div:nth-child(n+2):nth-child(-n+3) {
+    padding-right: 20px;
+}
+
+form > div:first-child div:nth-child(n+2):nth-child(-n+4) {
+    grid-column: span 2;
+}
+form > div:first-child div:nth-child(n+5):nth-child(-n+6) {
+    grid-column: span 3;
+} 
+
+label {
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+}
+
+input[type=submit] {
+    padding: 5px 15px;
+    font-size: 20px;
+    font-weight: bold;
+
+    margin-top: 30px;
+    background-color: rgb(30,144,255);
+
+    border: solid 2px gray;
+    border-radius: 15px;
+    color: white;
+}
+
+input[type=submit]:hover {
+    border-radius: 20px;
+    transition: 0.25s;
+    background-color: rgb(10,124,235);
+}
+
+form > :last-child {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 20px;
+}
+
+@media screen and (max-width: 575px) {
+    form > div:first-child {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+    form > div:first-child div:first-child {
+        grid-column: 1/2;
+    }
+    form > div:first-child div:nth-child(n+2):nth-child(-n+3) {
+        padding-right: 0;
+    }
+    form > div:first-child div:nth-child(n+2):nth-child(-n+4) {
+        grid-column: span 1;
+    }
+
+    form > div:first-child div:nth-child(n+5):nth-child(-n+6) {
+        grid-column: span 1;
+    } 
+}

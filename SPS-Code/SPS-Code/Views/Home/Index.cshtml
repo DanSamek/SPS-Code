@@ -1,11 +1,15 @@
-﻿@using SPS_Code.Helpers
+﻿@using SPS_Code.Helpers;
 @{
     ViewData["Title"] = "Domů";
-    var value = TempData[Helper.LoginSuccessful];
+
+    bool userLogged = Helper.GetLoggedUser(ViewContext.HttpContext, out _);
 }
 
-@if(value != null){
-    <div class="alert alert-success alert-dismissible">
-        <span>Přihlášení proběhlo úspěšně!</span>
-    </div>
+@section Style {
+    <link rel="stylesheet" href="~/css/Index.css">
 }
+
+<h1>Vítej na <span>SPŠ-Code</span></h1>
+<p>Školním portálu plném zajímavých algoritmizačním úloh.</p>
+<a href="@(userLogged ? "/task/show" : "/user/login")">Začni Řešit <img src="~/img/click.png" /></a>
+

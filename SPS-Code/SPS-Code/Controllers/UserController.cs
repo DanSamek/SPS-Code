@@ -18,7 +18,9 @@ namespace SPS_Code.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            if (!Helper.GetUser(HttpContext,_context, out var user)) { return Redirect("/"); }
+
+            return View(user);
         }
 
         [Route("login")]
@@ -40,7 +42,8 @@ namespace SPS_Code.Controllers
         public ActionResult RegisterPost([FromForm] RegisterRequest registerRequest)
         {
             var errorMessage = UserModel.CreateAndSaveToDb(registerRequest, _context);
-            if (errorMessage != null) return View("Register", registerRequest.SetError(errorMessage));
+            if (errorMessage != null) { TempData[Helper.ErrorToken] = errorMessage; return View("Register", registerRequest.SetError(errorMessage)); }
+            TempData[Helper.SuccessToken] = "Registrace proběhla úspěšně!";
             return RedirectToAction("Login");
         }
 
@@ -49,9 +52,9 @@ namespace SPS_Code.Controllers
         public ActionResult LoginPost([FromForm] UserRequest userRequest)
         {
             var errorMessage = UserModel.ValidateAndLogin(userRequest, _context, HttpContext);
-            if (errorMessage != null) return View("Login", userRequest.SetError(errorMessage));
-            TempData[Helper.LoginSuccessful] = true;
-            return Redirect("/");
+            if (errorMessage != null) { TempData[Helper.ErrorToken] = errorMessage; return View("Login", userRequest.SetError(errorMessage)); }
+            TempData[Helper.SuccessToken] = "Přihlášení proběhlo úspěšně!";
+            return Redirect("/user");
         }
 
         [Route("logout")]
@@ -59,6 +62,32 @@ namespace SPS_Code.Controllers
         {
             HttpContext.Session.Clear();
             return Redirect("/");
+        }
+
+        [HttpPost]
+        [Route("edit")]
+        public ActionResult EditUser([FromForm] UserEditRequest editRequest)
+        {
+            if (!Helper.GetUser(HttpContext, _context, out var user)) { return Redirect("/"); }
+
+            var errorMessage = UserModel.ValidateAndEdit(user, editRequest, _context);
+            if (errorMessage != null) { TempData[Helper.ErrorToken] = errorMessage; return Redirect("/user"); }
+
+            TempData[Helper.SuccessToken] = "Změna údajů proběhla vpořádku!";
+            return Redirect("/user");
+        }
+
+        [HttpPost]
+        [Route("chpasswd")]
+        public ActionResult ChangePassword([FromForm] UserPasswordRequest editRequest)
+        {
+            if (!Helper.GetUser(HttpContext, _context, out var user)) { return Redirect("/"); }
+
+            var errorMessage = UserModel.ValidateAndChangePassword(user, editRequest, _context);
+            if (errorMessage != null) { TempData[Helper.ErrorToken] = errorMessage; return Redirect("/user"); }
+
+            TempData[Helper.SuccessToken] = "Změna hesla proběhla vpořádku!";
+            return Redirect("/user");
         }
     }
 }

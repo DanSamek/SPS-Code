@@ -31,7 +31,19 @@
 .task-overview img {
     height: 30px;
 }
+.task-overview a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.task-overview .hidden {
+    background-color: #B1B3B5;
+    border-bottom: 2px solid gray;
+}
+.task-overview .hidden:hover {
+    background-color: #A1A3A5;
+}
 
 @media screen and (max-width: 575px) {
     .task-overview > div {

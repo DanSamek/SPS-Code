@@ -2,6 +2,10 @@
 @using SPS_Code.Helpers;
 @model SPS_Code.Controllers.ResponseTask
 
+@section Style {
+    <link rel="stylesheet" href="~/css/TaskDetail.css">
+}
+
 <div>
     <h1>@Model.Name</h1>
 
@@ -9,13 +13,15 @@
     @if (ViewContext.HttpContext.Session.GetString(Helper.UserCookie) != null) {
         @if (Model.ActiveTask != null)
         {
-            <a href="/task/downloadInput/@Model.Id/">Stáhnout vstup</a>
-            <p>Odevzdat do: @Model.ActiveTask.TimeUntil</p>
+            <div id="task-generated">
+                <a href="/task/downloadInput/@Model.Id/">Stáhnout vstup</a>
+                <p>Odevzdat do: @Model.ActiveTask.TimeUntil</p>
 
-            <form action="/task/validateInput/@Model.Id" method="post" enctype="multipart/form-data">
-                <input type="file" name="UserFile">
-                <input type="submit" />
-            </form>
+                <form action="/task/validateInput/@Model.Id" method="post" enctype="multipart/form-data">
+                    <input type="file" name="UserFile">
+                    <input type="submit" />
+                </form>
+            </div>
         }
         else
         {
@@ -54,9 +60,20 @@
 
 <div class="info">
     <h2>Informace</h2>
-    <p>Počet pokusů:  @Model.UserTaskResult.AttemptsCount</p>
-    <p>Maximální počet bodů:  @Model.UserTaskResult.MaxPointsObtained</p>
-    <p>Poslední pokus:  @Model.UserTaskResult.LastAttemptTime</p>
+
+    <div>
+        <p>Poslední pokus</p>
+        <p>Počet pokusů</p>
+        <p>Max. počet bodů</p>
+    </div>
+    <div>
+        <p>@Model.UserTaskResult.LastAttemptTime</p>
+        <p>@Model.UserTaskResult.AttemptsCount</p>
+        <p>@Model.UserTaskResult.MaxPointsObtained / @Model.UserTaskResult.Task.MaxPoints</p>
+        @if (Model.UserTaskResult.MaxPointsObtained == Model.UserTaskResult.Task.MaxPoints) {
+            <img src="~/img/done.png" />
+        }
+    </div>
 </div>
 
 

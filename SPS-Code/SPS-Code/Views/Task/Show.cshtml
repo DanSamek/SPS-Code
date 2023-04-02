@@ -1,7 +1,14 @@
+@using SPS_Code.Helpers;
 @model List<SPS_Code.Data.Models.TaskModel>
 
+@{
+    bool admin = Helper.CheckIfAdmin(ViewContext.HttpContext);
+}
 @section Style {
     <link rel="stylesheet" href="~/css/Task.css" asp-append-version="true" />
+    @if (admin){
+        <link rel="stylesheet" href="~/css/AdminTask.css" asp-append-version="true" />
+    }
 }
 <div class="task-overview">
       <div>
@@ -9,30 +16,34 @@
           <p>Max. bodů</p>
           <p>Počet Min.</p>
           <p>Vytvořeno</p>
-          <p>Zadání</p>
+          <p>Detail</p>
+          @if (admin) {
+              <p>Výsledky</p>
+              <p>Upravit</p>
+              <p>Zobrazení</p>
+          }
       </div>
-
       @foreach (var task in Model)
       {
-          if (!task.Visible && (ViewData["admin"] == null || !(bool)ViewData["admin"])) continue;
-          <div>
+          if (!task.Visible && !admin) continue;
+          <div class="@(task.Visible ? "" : "hidden")">
               <p>@task.Name</p>
               <p>@task.MaxPoints bodů</p>
               <p>@task.MaxSubmitTimeMinutes min.</p>
               <p>@task.Created.ToShortDateString()</p>
-              <a href="/task/@task.Id"><img src="~/img/info.png"></a>
-              @if (ViewData["admin"] != null && (bool)ViewData["admin"])
+              <a href="/task/@task.Id"><img title="Detail" alt="Detail" src="~/img/detail.png"></a>
+              @if (admin)
               {
+                    <a href="/task/results/@task.Id"><img title="Výsledky" alt="Vysledky" src="~/img/results.png"></a>
+                    <a href="/task/edit/@task.Id"><img title="Edit" alt="Edit" src="~/img/edit.png"></a>
                     if(task.Visible)
                     {
-                        <a href="/task/hide/@task.Id">Skrýt úlohu</a>
+                        <a href="/task/hide/@task.Id"><img title="Skrýt úlohu" alt="Skrýt" src="~/img/show.png"></a>
                     }
                     else
                     {
-                        <a href="/task/unhide/@task.Id">Odkrýt úlohu</a>
+                        <a href="/task/unhide/@task.Id"><img title="Odkrýt úlohu" alt="Odkrýt" src="~/img/hide.png"></a>
                     }
-                    <a href="/task/edit/@task.Id">Upravit</a>
-                    <a href="/task/results/@task.Id">Výsledky</a>
               }
           </div>
       }

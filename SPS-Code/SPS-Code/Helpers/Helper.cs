@@ -18,9 +18,24 @@ namespace SPS_Code.Helpers
         public static string LoginSuccessful => "loginSuccessful";
 
         /// <summary>
+        /// Název cookie pro kontrolu zda je uživatel admin -> kvůli stylům
+        /// </summary>
+        public static string AdminCheck => "is-admin";
+
+        /// <summary>
         /// Počet minut, po kterých se vygenerovaný vstup smaže
         /// </summary>
         public static int MinutesToDelete => 15;
+
+        /// <summary>
+        /// Error popup pro TempData
+        /// </summary>
+        public static string ErrorToken => "error-token";
+
+        /// <summary>
+        /// Success popup pro TempData
+        /// </summary>
+        public static string SuccessToken => "success-token";
 
         /// <summary>
         /// Pokud něco bude prázdné v objektu, vrátí null
@@ -49,14 +64,21 @@ namespace SPS_Code.Helpers
             var cookie = context.Session.GetString(UserCookie);
             if (cookie != null) id = Guid.Parse(cookie);
             else id = null;
+            
             return id != null;
+        }
+
+        public static bool CheckIfAdmin(HttpContext context)
+        {
+            if (context.Session.GetInt32(AdminCheck) == 1) return true;
+            else return false;
         }
 
         public static bool GetUser(HttpContext httpContext, CodeDbContext dbContext, out UserModel user, bool adminCheck = false)
         {
             user = null;
             if(!GetLoggedUser(httpContext, out Guid? id)) return false;
-            user = dbContext.Users.Include(x => x.Tasks).FirstOrDefault(u => u.Id == id.Value.ToString());
+            user = dbContext.Users.Include(x => x.Tasks).ThenInclude(x => x.Task).FirstOrDefault(u => u.Id == id.Value.ToString());
 
             if (user == null) return false;
             if (!user.IsAdmin && adminCheck) return false;
