@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SPS_Code.Controllers;
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Helpers;
 using System.ComponentModel.DataAnnotations;
@@ -111,6 +113,8 @@ namespace SPS_Code.Data.Models
         /// </summary>
         public static int Validate(IFormFile userOutput, TaskModel task, string generatedFilePath)
         {
+            if (userOutput == null) return 0;
+
             using var stream = userOutput.OpenReadStream();
             using var streamReader = new StreamReader(stream);
             var userDatai = streamReader.ReadToEnd();
@@ -182,6 +186,20 @@ namespace SPS_Code.Data.Models
             context.Tasks.Update(task);
             context.SaveChanges();
             return null;
+        }
+
+        public static void RemoveAllExpiredTasks(Dictionary<string, ActiveTask> tasks)
+        {
+            for (int i = 0; i < tasks.Count; i++)
+            {
+                var task = tasks.ElementAt(i);
+
+                if (task.Value.TimeUntil < DateTime.Now)
+                {
+                    tasks.Remove(task.Key);
+                    i--;
+                }
+            }
         }
     }
 }

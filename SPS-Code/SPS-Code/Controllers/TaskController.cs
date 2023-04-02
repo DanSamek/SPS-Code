@@ -139,11 +139,17 @@ namespace SPS_Code.Controllers
         [HttpPost("/task/validateInput/{taskId}")]
         public ActionResult ValidateInput(int taskId, [FromForm] IFormFile UserFile)
         {
+            if (UserFile == null) return Redirect($"/task/{taskId}");
+
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
             if (cookie == null) return Redirect("/404");
 
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
-            if (task == null || !ActiveTasks.ContainsKey(cookie)) return Redirect("/404");
+            if (task == null) return Redirect("/404");
+
+            //TO-DO -> aby se uživateli rovnou pøièetl i pokus
+            TaskModel.RemoveAllExpiredTasks(ActiveTasks);
+            if (!ActiveTasks.ContainsKey(cookie)) return Redirect($"/task/{taskId}");
 
             var at = ActiveTasks[cookie];
 

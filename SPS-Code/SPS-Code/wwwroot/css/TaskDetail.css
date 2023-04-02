@@ -1,0 +1,138 @@
+﻿.copyButton {
+    width: fit-content;
+    border: 1px solid;
+    background: var(--barva);
+    color: white;
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+    .copyButton:hover {
+        background-color: rgb(0 127 250);
+    }
+
+#afterCopy {
+    display: none;
+    background: black;
+    color: white;
+    width: fit-content;
+    padding: 8px;
+    font-size: 11px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+}
+
+.pre {
+    font-size: .875em;
+    color: var(--barva);
+    word-wrap: break-word;
+    padding: 5PX 10PX;
+    border: 1PX SOLID;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    MARGIN: 10px 0;
+}
+
+.info p {
+    margin: 0;
+}
+
+.info h2 {
+    padding-top: 20px;
+}
+
+#generate {
+    transition: .3s;
+    width: fit-content;
+    background: var(--barva);
+    display: flex;
+    padding: 5px 15px;
+    margin: 0 auto;
+}
+
+#generate a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+#generate img {
+    width: 25px;
+    margin-right: 10px;
+}
+
+
+#generate:hover {
+    background-color: rgb(0 127 250);
+}
+
+#task-generated {
+    width: 500px;
+    margin: 0 auto;
+    padding: 20px 40px;
+    border: 2px solid lightgray;
+    border-radius: 15px;
+    box-shadow: 3px 3px 7px var(--barva2);
+    font-weight: bold;
+
+    max-width: 100%;
+    margin-bottom: 10px;
+}
+
+#task-generated form {
+    display: grid;
+}
+
+#task-generated p {
+    margin: 0;
+}
+
+#task-generated form input {
+    margin-top: 10px;
+}
+
+#task-generated form input[type=submit] {
+    border-radius: 10px;
+    border: solid 1px gray;
+    padding: 2px;
+    font-weight: bold;
+    background-color: var(--barva);
+    color: white;
+}
+
+.info img {
+    height: 30px;
+}
+.info > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.8fr 50px;
+
+    line-height: 35px;
+    padding: 5px 10px;
+
+    text-align: center;
+
+    border-bottom: 2px solid lightgray;
+    justify-items: center;
+    align-items: center;
+}
+.info > div :first-child {
+    justify-self: left !important;
+}
+.info > :nth-child(2) {
+    background-color: var(--barva);
+    color: white;
+    border-bottom: 2px solid #186EC4;
+}
+
+@media screen and (max-width: 575px) {
+    .info > div {
+        grid-template-columns: 0.8fr 1fr 0.8fr 30px;
+    }
+    .info img {
+        height: 20px;
+    }
+}

@@ -1,5 +1,6 @@
 :root {
     --barva: rgb(30,144,255);
+    --barva2: rgb(140,204,255);
 }
 
 html {
@@ -23,73 +24,3 @@ body {
 
 
 /* Todo prenest do samostatneho souboru - Task*/
-.copyButton {
-    width: fit-content;
-    border: 1px solid;
-    background: var(--barva);
-    color: white;
-    padding: 4px 10px;
-    font-size: 11px;
-    cursor: pointer;
-    transition: .3s;
-}
-
-.copyButton:hover {
-    background-color: rgb(0 127 250);
-}
-
-#afterCopy {
-    display: none;
-    background: black;
-    color: white;
-    width: fit-content;
-    padding: 8px;
-    font-size: 11px;
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-}
-
-.pre {
-    font-size: .875em;
-    color: var(--barva);
-    word-wrap: break-word;
-    padding: 5PX 10PX;
-    border: 1PX SOLID;
-    border-radius: 4px;
-    white-space: pre-wrap;
-    MARGIN: 10px 0;
-}
-
-.info p{
-    margin: 0;
-}
-
-.info h2 {
-    padding-top: 20px;
-}
-
-#generate {
-    transition: .3s;
-    width: fit-content;
-    background: var(--barva);
-    display: flex;
-    padding: 5px 15px;
-    margin: 0 auto;
-}
-
-#generate a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-#generate img {
-    width: 25px;
-    margin-right: 10px;
-}
-
-
-#generate:hover {
-    background-color: rgb(0 127 250);
-}
