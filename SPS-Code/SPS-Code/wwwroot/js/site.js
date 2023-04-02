@@ -3,3 +3,11 @@
 
 // Write your JavaScript code.
 
+setTimeout(func, 3000);
+
+function func() {
+    for (let i = 0; i < document.getElementsByClassName("alert").length; i++) {
+        let a = document.getElementsByClassName("alert")[i];
+        document.querySelector("main").removeChild(a);
+    }
+}
