@@ -29,7 +29,7 @@ namespace SPS_Code.Controllers
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == id);
             if (task == null) return Redirect("/404");
 
-            if(!task.Visible) return Redirect("/404");
+            if(!task.Visible && !Helper.GetUser(HttpContext, _context, out _, true)) return Redirect("/task/show");
 
             ResponseTask rt = new();
             rt.MaxPoints = task.MaxPoints;
