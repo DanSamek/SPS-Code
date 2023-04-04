@@ -132,7 +132,9 @@ namespace SPS_Code.Controllers
             };
 
             var user = _context.Users?.Include(u => u.Tasks).FirstOrDefault(u => u.Id == cookie);
-            var taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == taskId);
+            UserTaskResult taskResult = null;
+            if (user.Tasks?.Count > 0 && user?.Tasks[0]?.Task != null) taskResult = user?.Tasks?.FirstOrDefault(x => x.Task.Id == taskId);
+
             if (taskResult == null)
             {
                 user.Tasks.Add(new UserTaskResult()
