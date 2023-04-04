@@ -48,7 +48,7 @@ namespace SPS_Code.Controllers
 
             var user = _context.Users?.Include(x => x.Tasks).FirstOrDefault(x => x.Id == cookie);
             UserTaskResult taskResult = null;
-            if (user?.Tasks[0]?.Task != null) taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == id);
+            if (user.Tasks?.Count > 0 && user?.Tasks[0]?.Task != null) taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == id);
             rt.UserTaskResult = taskResult;
             return View(rt);
         }
