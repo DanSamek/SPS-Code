@@ -46,8 +46,9 @@ namespace SPS_Code.Controllers
             if (ActiveTasks.ContainsKey(cookie)) at = ActiveTasks[cookie];
             if (at.TaskId == id) rt.ActiveTask = at;
 
-            var user = _context.Users.Include(x => x.Tasks).FirstOrDefault(x => x.Id == cookie);
-            var taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == id);
+            var user = _context.Users?.Include(x => x.Tasks).FirstOrDefault(x => x.Id == cookie);
+            UserTaskResult taskResult = null;
+            if (user?.Tasks[0]?.Task != null) taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == id);
             rt.UserTaskResult = taskResult;
             return View(rt);
         }
@@ -109,7 +110,6 @@ namespace SPS_Code.Controllers
         public ActionResult Generate(int taskId)
         {
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
-
             if (cookie == null) return Redirect("/404");
 
             if (ActiveTasks.ContainsKey(cookie)) return Redirect($"/task/{taskId}");
@@ -131,8 +131,28 @@ namespace SPS_Code.Controllers
                 TimeUntil = DateTime.Now.AddMinutes(task.MaxSubmitTimeMinutes)
             };
 
-            ActiveTasks.Add(cookie, at);
+            var user = _context.Users?.Include(u => u.Tasks).FirstOrDefault(u => u.Id == cookie);
+            var taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == taskId);
+            if (taskResult == null)
+            {
+                user.Tasks.Add(new UserTaskResult()
+                {
+                    AttemptsCount = 1,
+                    LastAttemptTime = DateTime.Now,
+                    MaxPointsObtained = 0,
+                    Task = task,
+                    User = user
+                });
+            }
+            else
+            {
+                taskResult.AttemptsCount++;
+                taskResult.LastAttemptTime = DateTime.Now;
+            }
 
+            ActiveTasks.Add(cookie, at);
+            _context.Users?.Update(user);            
+            _context.SaveChanges();
             return Redirect($"/task/{taskId}");
         }
 
@@ -147,7 +167,6 @@ namespace SPS_Code.Controllers
             var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
             if (task == null) return Redirect("/404");
 
-            //TO-DO -> aby se uživateli rovnou pøièetl i pokus
             TaskModel.RemoveAllExpiredTasks(ActiveTasks);
             if (!ActiveTasks.ContainsKey(cookie)) { TempData[Helper.ErrorToken] = "Èas pro odevzdání vypršel!"; return Redirect($"/task/{taskId}"); }
 
@@ -163,23 +182,7 @@ namespace SPS_Code.Controllers
             
             var taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == taskId);
 
-            if (taskResult == null)
-            {
-                user.Tasks.Add(new UserTaskResult()
-                {
-                    AttemptsCount = 1,
-                    LastAttemptTime = DateTime.Now,
-                    MaxPointsObtained = points,
-                    Task = task,
-                    User = user
-                });
-            }
-            else
-            {
-                taskResult.AttemptsCount++;
-                taskResult.LastAttemptTime = DateTime.Now;
-                taskResult.MaxPointsObtained = Math.Max(taskResult.MaxPointsObtained, points);
-            }
+            taskResult.MaxPointsObtained = Math.Max(taskResult.MaxPointsObtained, points);
 
             _context.Users.Update(user);
             ActiveTasks.Remove(cookie);
