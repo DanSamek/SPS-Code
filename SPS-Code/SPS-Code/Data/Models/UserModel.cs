@@ -45,7 +45,7 @@ namespace SPS_Code.Data.Models
 
             if (!request.Email.Contains("spstrutnov")) return "Je potřeba použít školní email!";
 
-            new UserCategory().AddDefaultCategories(context);
+            UserCategory.AddDefaultCategories(context);
 
             UserModel user = new()
             {
