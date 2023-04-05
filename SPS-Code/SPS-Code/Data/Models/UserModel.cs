@@ -27,7 +27,10 @@ namespace SPS_Code.Data.Models
 
         [Required]
         public bool IsAdmin { get; set; } = false;
-        
+
+        [Required]
+        public UserCategory? UserCategory { get; set; }
+
         [Required]
         public virtual List<UserTaskResult>? Tasks { get; set; } = new();
 
@@ -42,6 +45,8 @@ namespace SPS_Code.Data.Models
 
             if (!request.Email.Contains("spstrutnov")) return "Je potřeba použít školní email!";
 
+            new UserCategory().AddDefaultCategoryes(context);
+
             UserModel user = new()
             {
                 IsAdmin = false,
@@ -49,7 +54,8 @@ namespace SPS_Code.Data.Models
                 FirstName = request.FirstName,
                 LastName = request.LastName,    
                 Password = bcrypt.HashPassword(request.Password),
-                Id = Guid.NewGuid().ToString()
+                Id = Guid.NewGuid().ToString(),
+                UserCategory = context.UserCategoryes.FirstOrDefault(c => c.Name == "None")
             };
 
             context.Users?.Add(user);
@@ -80,17 +86,19 @@ namespace SPS_Code.Data.Models
             
             user.FirstName = req.FirstName;
             user.LastName = req.LastName;
+            user.Email = req.Email ?? user.Email;
+            user.UserCategory = context.UserCategoryes?.FirstOrDefault(c => c.ID == req.CategoryID) ?? user.UserCategory;
 
             context.SaveChanges();
 
             return null;
         }
 
-        public static string? ValidateAndChangePassword(UserModel user, UserPasswordRequest req, CodeDbContext context)
+        public static string? ValidateAndChangePassword(UserModel user, UserPasswordRequest req, CodeDbContext context, bool admin = false)
         {
-            if (req.Password.IsNullOrEmpty() || req.NewPassword.IsNullOrEmpty() || req.NewPasswordCheck.IsNullOrEmpty()) return "Něco nebylo vyplněno!";
+            if (req.Password.IsNullOrEmpty() && !admin || req.NewPassword.IsNullOrEmpty() || req.NewPasswordCheck.IsNullOrEmpty()) return "Něco nebylo vyplněno!";
 
-            if (!bcrypt.Verify(req.Password, user.Password)) return "Špatné heslo!";
+            if (!admin && !bcrypt.Verify(req.Password, user.Password)) return "Špatné heslo!";
 
             if (req.NewPassword != req.NewPasswordCheck) return "Nová hesla se neshodují!";
 

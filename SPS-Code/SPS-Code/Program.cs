@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SPS_Code.Data;
+using SPS_Code.Data.Models;
 using SPS_Code.Helpers;
 
 namespace SPS_Code;

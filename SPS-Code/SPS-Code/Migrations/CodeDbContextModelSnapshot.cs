@@ -66,6 +66,28 @@ namespace SPSCode.Migrations
                     b.ToTable("Tasks");
                 });
 
+            modelBuilder.Entity("SPS_Code.Data.Models.UserCategory", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("UserCategoryes");
+                });
+
             modelBuilder.Entity("SPS_Code.Data.Models.UserModel", b =>
                 {
                     b.Property<string>("Id")
@@ -90,7 +112,12 @@ namespace SPSCode.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserCategoryID")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserCategoryID");
 
                     b.ToTable("Users");
                 });
@@ -126,6 +153,17 @@ namespace SPSCode.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserTaskResult");
+                });
+
+            modelBuilder.Entity("SPS_Code.Data.Models.UserModel", b =>
+                {
+                    b.HasOne("SPS_Code.Data.Models.UserCategory", "UserCategory")
+                        .WithMany()
+                        .HasForeignKey("UserCategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserCategory");
                 });
 
             modelBuilder.Entity("SPS_Code.Data.Models.UserTaskResult", b =>

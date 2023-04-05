@@ -1,0 +1,51 @@
+﻿@using SPS_Code.Data.Models;
+@model List<UserModel>
+@{
+    List<UserCategory> cats = ViewBag.Categories;
+}
+
+@section Style {
+    <link rel="stylesheet" href="~/css/ManageUsers.css" asp-append-version="true" />
+}
+
+<div class="user-overview">
+    <div>
+        <p>E-mail</p>
+        <p>Jméno</p>
+        <p>Přijmení</p>
+        <p>Kategorie</p>
+        <p></p>
+        <p>Heslo</p>
+        <p>Heslo Kontrolní</p>
+        <p></p>
+    </div>
+    @foreach (var user in Model)
+    {
+    <div>
+        <form action="/user/edit/@user.Id" method="post">
+            <input type="text" value="@user.Email" name="Email" >
+            <input type="text" value="@user.FirstName" name="FirstName" >
+            <input type="text" value="@user.LastName" name="LastName">
+            <select name="CategoryID">
+                @foreach(var cat in cats)
+                {
+                    if (user.UserCategory.ID == cat.ID)
+                    {
+                        <option selected value="@cat.ID">@cat.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@cat.ID">@cat.Name</option>
+                    }
+                }
+            </select>
+            <input type="submit" value="Odeslat">
+        </form>
+        <form action="/user/chpasswd/@user.Id" method="post">
+            <input type="password" name="NewPassword">
+            <input type="password" name="NewPasswordCheck">
+            <input type="submit" value="Odeslat">
+        </form>
+    </div>
+    }
+</div>

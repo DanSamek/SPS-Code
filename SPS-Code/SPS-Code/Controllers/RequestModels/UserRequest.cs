@@ -16,9 +16,10 @@
 
     public class UserEditRequest
     {
-        public string Email { get; set; }
+        public string? Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public int? CategoryID { get; set; }
     }
 
     public class UserPasswordRequest

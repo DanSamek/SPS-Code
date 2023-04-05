@@ -1,0 +1,20 @@
+﻿
+.user-overview div {
+    display: grid;
+}
+.user-overview div {
+    grid-template-columns: 1.12fr 0.75fr;
+}
+.user-overview div:first-child {
+    grid-template-columns: repeat(8, 1fr);
+}
+.user-overview form {
+    display: grid;
+    margin: 0 5px;
+}
+.user-overview form:first-child {
+    grid-template-columns: repeat(5, 1fr);
+}
+.user-overview form:last-child {
+    grid-template-columns: repeat(3, 1fr);
+}
