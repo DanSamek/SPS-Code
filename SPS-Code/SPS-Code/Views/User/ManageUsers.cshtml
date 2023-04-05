@@ -15,10 +15,10 @@
         <p>Přijmení</p>
         <p>Kategorie</p>
         <p></p>
-        <p>Heslo</p>
-        <p>Heslo Kontrolní</p>
-        <p></p>
+        <p>Změna hesla</p>
+        <p>Smazat</p>
     </div>
+    @{ int index = 0; }
     @foreach (var user in Model)
     {
     <div>
@@ -41,12 +41,15 @@
             </select>
             <input type="submit" value="Odeslat">
         </form>
-        <form action="/user/chpasswd/@user.Id" method="post">
-            <input type="password" name="NewPassword">
-            <input type="password" name="NewPasswordCheck">
+        <button onclick="document.getElementsByClassName('chpasswd')[@index].style.display = 'grid'">Změnit Heslo</button>
+        <form action="/user/chpasswd/@user.Id" method="post" class="chpasswd">
+            <h2>Změna hesla</h2>
+            <input type="password" name="NewPassword" placeholder="Nové heslo...">
+            <input type="password" name="NewPasswordCheck" placeholder="Nové heslo kontrolní...">
             <input type="submit" value="Odeslat">
+            <div onclick="document.getElementsByClassName('chpasswd')[@index].style.display = ''">×</div>
         </form>
-        <a href="/user/delete/@user.Id">Odebrat uživatele</a>
+            <a href="/user/delete/@user.Id" onclick="return confirm('Opravdu si přejete smazat uživatele @(user.FirstName+" "+user.LastName)?')" class="delete"><img src="~/img/bin.png" /><img src="~/img/bin-open.png" /></a>
     </div>
     }
 </div>

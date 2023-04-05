@@ -8,11 +8,13 @@
 <div id="res">
     <div>
         <div>Jméno a Příjmení</div>
+        <div>Třída</div>
         <div>Získané body / Max</div>
     </div>
 @foreach(var um in Model){    
     <div>
         <div>@um.FirstName @um.LastName</div>
+        <div>@um.UserCategory.Name</div>
         <div>@um.Tasks[0].MaxPointsObtained/@um.Tasks[0].Task.MaxPoints b.</div>
     </div>
 }

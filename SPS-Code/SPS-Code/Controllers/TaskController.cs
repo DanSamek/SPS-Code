@@ -29,7 +29,11 @@ namespace SPS_Code.Controllers
             var task = TaskModel.GetTaskModel(_context, id);
             if (task == null) return Redirect("/404");
 
-            if(!task.Visible && !Helper.GetUser(HttpContext, _context, out _, true)) return Redirect("/task/show");
+            Helper.GetUser(HttpContext, _context, out var user);
+            if(!task.Visible && user?.IsAdmin != true) return Redirect("/task/show");
+
+            var cat = user?.UserCategory ?? _context.UserCategories.First();
+            if(!task.ViewUserCategories.Contains(cat)) return Redirect("/task/show");
 
             ResponseTask rt = new();
             rt.MaxPoints = task.MaxPoints;
@@ -46,7 +50,6 @@ namespace SPS_Code.Controllers
             if (ActiveTasks.ContainsKey(cookie)) at = ActiveTasks[cookie];
             if (at.TaskId == id) rt.ActiveTask = at;
 
-            var user = _context.Users?.Include(x => x.Tasks).ThenInclude(x => x.Task).FirstOrDefault(x => x.Id == cookie);
             UserTaskResult taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == id);
             rt.UserTaskResult = taskResult;
             return View(rt);
@@ -55,9 +58,11 @@ namespace SPS_Code.Controllers
         [Route("show")]
         public ActionResult Show()
         {
-            var tasks = _context.Tasks?.ToList();
-
             Helper.GetUser(HttpContext, _context, out var user);
+            var cat = user?.UserCategory ?? _context.UserCategories.First();
+            var tasks = _context.Tasks?.Include(t => t.ViewUserCategories)
+                .Where(t => user != null && user.IsAdmin == true || t.ViewUserCategories.Contains(_context.UserCategories.First()) || t.ViewUserCategories.Contains(cat)).ToList();
+
             ViewData["admin"] = user?.IsAdmin;
             return View(tasks);
         }
