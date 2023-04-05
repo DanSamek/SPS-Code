@@ -76,6 +76,22 @@ namespace SPS_Code.Controllers
             TempData[Helper.SuccessToken] = "Změna údajů proběhla vpořádku!";
             return Redirect("/user");
         }
+        [HttpPost]
+        [Route("edit/{id}")]
+        public ActionResult EditUser([FromForm] UserEditRequest editRequest, string id)
+        {
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) { return Redirect("/"); }
+
+            var _targetUser = _context.Users.FirstOrDefault(u => u.Id == id);
+
+            if (_targetUser == null) { return Redirect("/"); }
+
+            var errorMessage = UserModel.ValidateAndEdit(_targetUser, editRequest, _context);
+            if (errorMessage != null) { TempData[Helper.ErrorToken] = errorMessage; return Redirect("/user/manage"); }
+
+            TempData[Helper.SuccessToken] = "Změna údajů proběhla vpořádku!";
+            return Redirect("/user/manage");
+        }
 
         [HttpPost]
         [Route("chpasswd")]
@@ -89,6 +105,37 @@ namespace SPS_Code.Controllers
             TempData[Helper.SuccessToken] = "Změna hesla proběhla vpořádku!";
             return Redirect("/user");
         }
+        [HttpPost]
+        [Route("chpasswd/{id}")]
+        public ActionResult ChangePassword([FromForm] UserPasswordRequest editRequest, string id)
+        {
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) { return Redirect("/"); }
+
+            var _targetUser = _context.Users.FirstOrDefault(u => u.Id == id);
+
+            if ( _targetUser == null ) { return Redirect("/"); }
+
+            var errorMessage = UserModel.ValidateAndChangePassword(_targetUser, editRequest, _context, true);
+            if (errorMessage != null) { TempData[Helper.ErrorToken] = errorMessage; return Redirect("/user/manage"); }
+
+            TempData[Helper.SuccessToken] = "Změna hesla proběhla vpořádku!";
+            return Redirect("/user/manage");
+
+        }
+
+        [HttpGet]
+        [Route("manage")]
+        public ActionResult ManageUsers()
+        {
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) { return Redirect("/"); }
+
+            var users = _context.Users.ToList();
+
+            ViewBag.Categories = _context.UserCategoryes.ToList();
+
+            return View(users);
+        }
+
     }
 }
  
