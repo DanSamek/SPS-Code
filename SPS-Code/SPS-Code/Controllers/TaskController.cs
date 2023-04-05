@@ -46,9 +46,8 @@ namespace SPS_Code.Controllers
             if (ActiveTasks.ContainsKey(cookie)) at = ActiveTasks[cookie];
             if (at.TaskId == id) rt.ActiveTask = at;
 
-            var user = _context.Users?.Include(x => x.Tasks).FirstOrDefault(x => x.Id == cookie);
-            UserTaskResult taskResult = null;
-            if (user.Tasks?.Count > 0 && user?.Tasks[0]?.Task != null) taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == id);
+            var user = _context.Users?.Include(x => x.Tasks).ThenInclude(x => x.Task).FirstOrDefault(x => x.Id == cookie);
+            UserTaskResult taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == id);
             rt.UserTaskResult = taskResult;
             return View(rt);
         }
@@ -131,9 +130,8 @@ namespace SPS_Code.Controllers
                 TimeUntil = DateTime.Now.AddMinutes(task.MaxSubmitTimeMinutes)
             };
 
-            var user = _context.Users?.Include(u => u.Tasks).FirstOrDefault(u => u.Id == cookie);
-            UserTaskResult taskResult = null;
-            if (user.Tasks?.Count > 0 && user?.Tasks[0]?.Task != null) taskResult = user?.Tasks?.FirstOrDefault(x => x.Task.Id == taskId);
+            var user = _context.Users?.Include(u => u.Tasks).ThenInclude(x => x.Task).FirstOrDefault(u => u.Id == cookie);
+            UserTaskResult taskResult = user?.Tasks?.FirstOrDefault(x => x.Task.Id == taskId);
 
             if (taskResult == null)
             {
@@ -184,7 +182,7 @@ namespace SPS_Code.Controllers
                 points = TaskModel.Validate(UserFile, task, at.Uri);
             }
 
-            var user = _context.Users.Include(x => x.Tasks).FirstOrDefault(x => x.Id == cookie);
+            var user = _context.Users.Include(x => x.Tasks).ThenInclude(x => x.Task).FirstOrDefault(x => x.Id == cookie);
             
             var taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == taskId);
 
