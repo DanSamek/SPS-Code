@@ -1,3 +1,4 @@
+using Markdig.Extensions.TaskLists;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SPS_Code.Controllers;
@@ -44,12 +45,16 @@ namespace SPS_Code.Data.Models
         [Required]
         public bool Visible { get; set; } = true;
 
+        [Required]
+        public List<UserCategory>? ViewUserCategories { get; set; }
+
         /// <summary>
         /// Task create
         /// </summary>
         public static string? CreateAndSaveToDb(TaskCreateRequest request, CodeDbContext context, out string taskId)
         {
             taskId = null;
+            if (request.CategoryIDs == null) request.CategoryIDs = new List<int> { 0 };
             if (!Helper.CheckAllParams(request)) return "Něco nebylo vyplněno!";
 
             var genExt = Path.GetExtension(request.Generator.FileName);
@@ -67,6 +72,7 @@ namespace SPS_Code.Data.Models
                 MaxSubmitTimeMinutes = request.MaxSubmitTimeMinutes,
                 TestCount = request.TestCount,
                 Created = DateTime.Now,
+                ViewUserCategories = context.UserCategories.Where(c => request.CategoryIDs.Contains(c.ID)).ToList()
             };
 
             // Save validator files and generator files
@@ -152,7 +158,7 @@ namespace SPS_Code.Data.Models
 
         public static string? Edit(TaskEditRequest request, CodeDbContext context, int taskId)
         {
-            var task = context.Tasks.FirstOrDefault(t => t.Id == taskId);
+            var task = GetTaskModel(context, taskId);
 
             if (!Helper.CheckAllParams(request)) return "Něco nebylo vyplněno!";
             if(task == null) return "Taková úloha neexistuje!";
@@ -164,6 +170,8 @@ namespace SPS_Code.Data.Models
             task.Outputs = request.Outputs;
             task.MaxSubmitTimeMinutes = request.MaxSubmitTimeMinutes;
             task.TestCount = request.TestCount;
+            task.ViewUserCategories.Clear();
+            task.ViewUserCategories = context.UserCategories.Where(c => request.CategoryIDs.Contains(c.ID)).ToList();
 
             if (!Directory.Exists($"./Tasks/{task.Name}")) Directory.CreateDirectory($"./Tasks/{task.Name}");
             if (request.Generator != null)
@@ -201,5 +209,12 @@ namespace SPS_Code.Data.Models
                 }
             }
         }
+
+        public static TaskModel? GetTaskModel(CodeDbContext context, int id)
+        {
+            return context.Tasks?.Include(t => t.ViewUserCategories).FirstOrDefault(t => t.Id == id);
+        }
+
+
     }
 }

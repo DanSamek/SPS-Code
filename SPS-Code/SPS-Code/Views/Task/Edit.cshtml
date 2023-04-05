@@ -1,7 +1,10 @@
 ﻿@using SPS_Code.Controllers.RequestModels;
+@using SPS_Code.Data.Models;
 @model TaskEditRequest
 @{
     ViewData["Title"] = "Editace úlohy";
+
+    List<UserCategory> cats = ViewBag.Categories;
 }
 
 @section Style {
@@ -36,6 +39,22 @@
         <div>
             <label for="Validator">Validátor uživatelského výstupu</label>
             <input type="file" name="Validator" />
+        </div>
+        <div>
+            <label for="CategoryIDs">Přístupné kategoriím</label>
+            <select multiple name="CategoryIDs">
+                @foreach (var cat in cats)
+                {
+                    @if (Model.CategoryIDs != null && Model.CategoryIDs.Contains(cat.ID))
+                    {
+                        <option value="@cat.ID" selected>@cat.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@cat.ID">@cat.Name</option>
+                    }
+                }
+            </select>
         </div>
     </div>
 
