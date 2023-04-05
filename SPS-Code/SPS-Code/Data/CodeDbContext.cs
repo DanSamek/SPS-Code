@@ -10,12 +10,11 @@ namespace SPS_Code.Data
         public DbSet<UserModel>? Users { get; set; }
         public DbSet<TaskModel>? Tasks { get; set; }
         public DbSet<UserTaskResult>? UserTaskResult { get; set; }
-        public DbSet<UserCategory>? UserCategoryes { get; set; }
+        public DbSet<UserCategory>? UserCategories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<UserModel>().HasMany(u => u.Tasks).WithOne(t => t.User);
-
             builder.Entity<UserModel>().HasOne(u => u.UserCategory).WithMany();
         }
     }

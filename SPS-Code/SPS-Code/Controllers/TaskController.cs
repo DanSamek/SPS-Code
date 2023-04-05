@@ -170,7 +170,7 @@ namespace SPS_Code.Controllers
             if (task == null) return Redirect("/404");
 
             TaskModel.RemoveAllExpiredTasks(ActiveTasks);
-            if (!ActiveTasks.ContainsKey(cookie)) { TempData[Helper.ErrorToken] = "Èas pro odevzdání vypršel!"; return Redirect($"/task/{taskId}"); }
+            if (!ActiveTasks.ContainsKey(cookie)) TempData[Helper.ErrorToken] = "Èas pro odevzdání vypršel!"; return Redirect($"/task/{taskId}"); 
 
             var at = ActiveTasks[cookie];
 
@@ -190,7 +190,7 @@ namespace SPS_Code.Controllers
             ActiveTasks.Remove(cookie);
             _context.SaveChanges();
 
-            TempData[Helper.SuccessToken] = "Odevzdání probìhlo vpoøádku!";
+            TempData[Helper.SuccessToken] = "Odevzdání probìhlo v poøádku!";
             return Redirect($"/task/{task.Id}");
         }
 
@@ -202,7 +202,7 @@ namespace SPS_Code.Controllers
             if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
             var errorMessage = TaskModel.CreateAndSaveToDb(taskCreateRequest, _context, out var taskId);
-            if (errorMessage != null) { TempData[Helper.ErrorToken] = errorMessage; return View("Create", taskCreateRequest.SetError(errorMessage)); }
+            if (errorMessage != null) TempData[Helper.ErrorToken] = errorMessage; return View("Create", taskCreateRequest.SetError(errorMessage));
 
             TempData[Helper.SuccessToken] = "Úloha byla úspìšnì vytvoøena!";
             return Redirect($"/task/{taskId}");

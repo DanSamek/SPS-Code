@@ -55,7 +55,7 @@ namespace SPS_Code.Data.Models
                 LastName = request.LastName,    
                 Password = bcrypt.HashPassword(request.Password),
                 Id = Guid.NewGuid().ToString(),
-                UserCategory = context.UserCategoryes.FirstOrDefault(c => c.Name == "None")
+                UserCategory = context.UserCategories.FirstOrDefault(c => c.Name == "None")
             };
 
             context.Users?.Add(user);
@@ -87,7 +87,7 @@ namespace SPS_Code.Data.Models
             user.FirstName = req.FirstName;
             user.LastName = req.LastName;
             user.Email = req.Email ?? user.Email;
-            user.UserCategory = context.UserCategoryes?.FirstOrDefault(c => c.ID == req.CategoryID) ?? user.UserCategory;
+            user.UserCategory = context.UserCategories?.FirstOrDefault(c => c.ID == req.CategoryID) ?? user.UserCategory;
 
             context.SaveChanges();
 
