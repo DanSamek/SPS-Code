@@ -18,7 +18,7 @@ namespace SPSCode.Migrations
                 defaultValue: 0);
 
             migrationBuilder.CreateTable(
-                name: "UserCategoryes",
+                name: "UserCategories",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
@@ -28,7 +28,7 @@ namespace SPSCode.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserCategoryes", x => x.ID);
+                    table.PrimaryKey("PK_UserCategories", x => x.ID);
                 });
 
             migrationBuilder.CreateIndex(
@@ -37,10 +37,10 @@ namespace SPSCode.Migrations
                 column: "UserCategoryID");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Users_UserCategoryes_UserCategoryID",
+                name: "FK_Users_UserCategories_UserCategoryID",
                 table: "Users",
                 column: "UserCategoryID",
-                principalTable: "UserCategoryes",
+                principalTable: "UserCategories",
                 principalColumn: "ID",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -49,11 +49,11 @@ namespace SPSCode.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Users_UserCategoryes_UserCategoryID",
+                name: "FK_Users_UserCategories_UserCategoryID",
                 table: "Users");
 
             migrationBuilder.DropTable(
-                name: "UserCategoryes");
+                name: "UserCategories");
 
             migrationBuilder.DropIndex(
                 name: "IX_Users_UserCategoryID",

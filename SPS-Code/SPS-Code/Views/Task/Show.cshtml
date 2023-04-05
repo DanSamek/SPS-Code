@@ -2,7 +2,7 @@
 @model List<SPS_Code.Data.Models.TaskModel>
 
 @{
-    bool admin = Helper.CheckIfAdmin(ViewContext.HttpContext);
+    bool admin = Helper.IsAdmin(ViewContext.HttpContext);
 }
 @section Style {
     <link rel="stylesheet" href="~/css/Task.css" asp-append-version="true" />

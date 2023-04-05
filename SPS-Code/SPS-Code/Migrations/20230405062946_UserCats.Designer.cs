@@ -88,7 +88,7 @@ namespace SPSCode.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("UserCategoryes");
+                    b.ToTable("UserCategories");    
                 });
 
             modelBuilder.Entity("SPS_Code.Data.Models.UserModel", b =>

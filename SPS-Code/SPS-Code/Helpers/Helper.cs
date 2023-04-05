@@ -68,7 +68,7 @@ namespace SPS_Code.Helpers
             return id != null;
         }
 
-        public static bool CheckIfAdmin(HttpContext context)
+        public static bool IsAdmin(HttpContext context)
         {
             if (context.Session.GetInt32(AdminCheck) == 1) return true;
             else return false;

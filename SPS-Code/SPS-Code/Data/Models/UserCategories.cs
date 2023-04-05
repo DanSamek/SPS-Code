@@ -12,9 +12,9 @@ namespace SPS_Code.Data.Models
         public UserCategory() { }
 
         public UserCategory(string name)  => Name = name;
-        public void AddDefaultCategoryes(CodeDbContext context)
+        public void AddDefaultCategories(CodeDbContext context)
         {
-            if (context.UserCategories.Count() > 0) return;
+            if (context.UserCategories?.Count() > 0) return;
 
             context.UserCategories.Add(new("None"));
             context.UserCategories.Add(new("1. EP"));

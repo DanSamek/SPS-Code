@@ -144,13 +144,26 @@ namespace SPS_Code.Controllers
         [Route("manage")]
         public ActionResult ManageUsers()
         {
-            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/");
+            if (!Helper.IsAdmin(HttpContext)) return Redirect("/");
             var users = _context.Users.ToList();
 
             ViewBag.Categories = _context.UserCategories.ToList();
             return View(users);
         }
 
+        [HttpGet]
+        [Route("delete/{id}")]
+        public ActionResult Delete(string id)
+        {
+            if(!Helper.IsAdmin(HttpContext)) return Redirect("/404");
+
+            var user = _context?.Users?.FirstOrDefault(x => x.Id == id);
+            if(user == null) return Redirect("/404");
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            return Redirect("/user/manage");
+        }
     }
 }
  

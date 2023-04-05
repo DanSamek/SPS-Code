@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+using Azure.Core;
 using Microsoft.IdentityModel.Tokens;
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Helpers;
@@ -45,7 +45,7 @@ namespace SPS_Code.Data.Models
 
             if (!request.Email.Contains("spstrutnov")) return "Je potřeba použít školní email!";
 
-            new UserCategory().AddDefaultCategoryes(context);
+            new UserCategory().AddDefaultCategories(context);
 
             UserModel user = new()
             {
@@ -97,15 +97,11 @@ namespace SPS_Code.Data.Models
         public static string? ValidateAndChangePassword(UserModel user, UserPasswordRequest req, CodeDbContext context, bool admin = false)
         {
             if (req.Password.IsNullOrEmpty() && !admin || req.NewPassword.IsNullOrEmpty() || req.NewPasswordCheck.IsNullOrEmpty()) return "Něco nebylo vyplněno!";
-
             if (!admin && !bcrypt.Verify(req.Password, user.Password)) return "Špatné heslo!";
-
             if (req.NewPassword != req.NewPasswordCheck) return "Nová hesla se neshodují!";
 
             user.Password = bcrypt.HashPassword(req.NewPassword);
-
             context.SaveChanges();
-
             return null;
         }
     }

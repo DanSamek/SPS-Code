@@ -22,7 +22,7 @@
                 </button>
                 @{
                     bool userLogged = Helper.GetLoggedUser(ViewContext.HttpContext, out _);
-                    bool admin = userLogged ? Helper.CheckIfAdmin(ViewContext.HttpContext) : false;
+                    bool admin = userLogged ? Helper.IsAdmin(ViewContext.HttpContext) : false;
                 }
 
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
