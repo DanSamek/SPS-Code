@@ -11,10 +11,7 @@ namespace SPS_Code.Controllers
     {
         private CodeDbContext _context;
 
-        public UserController(CodeDbContext context)
-        {
-            _context = context;
-        }
+        public UserController(CodeDbContext context) => _context = context;
 
         public ActionResult Index()
         {
@@ -41,7 +38,11 @@ namespace SPS_Code.Controllers
         public ActionResult RegisterPost([FromForm] RegisterRequest registerRequest)
         {
             var errorMessage = UserModel.CreateAndSaveToDb(registerRequest, _context);
-            if (errorMessage != null) TempData[Helper.ErrorToken] = errorMessage; return View("Register", registerRequest.SetError(errorMessage));
+            if (errorMessage != null)
+            {
+                TempData[Helper.ErrorToken] = errorMessage; 
+                return View("Register", registerRequest.SetError(errorMessage));
+            }
             TempData[Helper.SuccessToken] = "Registrace proběhla úspěšně!";
             return RedirectToAction("Login");
         }
@@ -51,7 +52,11 @@ namespace SPS_Code.Controllers
         public ActionResult LoginPost([FromForm] UserRequest userRequest)
         {
             var errorMessage = UserModel.ValidateAndLogin(userRequest, _context, HttpContext);
-            if (errorMessage != null) TempData[Helper.ErrorToken] = errorMessage; return View("Login", userRequest.SetError(errorMessage));
+            if (errorMessage != null)
+            {
+                TempData[Helper.ErrorToken] = errorMessage; 
+                return View("Login", userRequest.SetError(errorMessage));
+            }
             TempData[Helper.SuccessToken] = "Přihlášení proběhlo úspěšně!";
             return Redirect("/");
         }
@@ -69,7 +74,11 @@ namespace SPS_Code.Controllers
         {
             if (!Helper.GetUser(HttpContext, _context, out var user)) return Redirect("/");
             var errorMessage = UserModel.ValidateAndEdit(user, editRequest, _context);
-            if (errorMessage != null) TempData[Helper.ErrorToken] = errorMessage; return Redirect("/user");
+            if (errorMessage != null)
+            {
+                TempData[Helper.ErrorToken] = errorMessage;
+                return Redirect("/user");
+            }
 
             TempData[Helper.SuccessToken] = "Změna údajů proběhla vpořádku!";
             return Redirect("/user");
@@ -84,7 +93,11 @@ namespace SPS_Code.Controllers
             if (_targetUser == null) { return Redirect("/"); }
 
             var errorMessage = UserModel.ValidateAndEdit(_targetUser, editRequest, _context);
-            if (errorMessage != null) TempData[Helper.ErrorToken] = errorMessage; return Redirect("/user/manage"); 
+            if (errorMessage != null)
+            {
+                TempData[Helper.ErrorToken] = errorMessage;
+                return Redirect("/user/manage");
+            }
 
             TempData[Helper.SuccessToken] = "Změna údajů proběhla vpořádku!";
             return Redirect("/user/manage");
@@ -97,7 +110,11 @@ namespace SPS_Code.Controllers
             if (!Helper.GetUser(HttpContext, _context, out var user)) return Redirect("/");
 
             var errorMessage = UserModel.ValidateAndChangePassword(user, editRequest, _context);
-            if (errorMessage != null) TempData[Helper.ErrorToken] = errorMessage; return Redirect("/user");
+            if (errorMessage != null)
+            {
+                TempData[Helper.ErrorToken] = errorMessage; 
+                return Redirect("/user");
+            }
 
             TempData[Helper.SuccessToken] = "Změna hesla proběhla v pořádku!";
             return Redirect("/user");
@@ -112,7 +129,11 @@ namespace SPS_Code.Controllers
             if (_targetUser == null) return Redirect("/");
 
             var errorMessage = UserModel.ValidateAndChangePassword(_targetUser, editRequest, _context, true);
-            if (errorMessage != null) TempData[Helper.ErrorToken] = errorMessage; return Redirect("/user/manage");
+            if (errorMessage != null)
+            {
+                TempData[Helper.ErrorToken] = errorMessage; 
+                return Redirect("/user/manage");
+            }
 
             TempData[Helper.SuccessToken] = "Změna hesla proběhla v pořádku!";
             return Redirect("/user/manage");

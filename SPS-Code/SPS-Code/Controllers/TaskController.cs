@@ -170,7 +170,11 @@ namespace SPS_Code.Controllers
             if (task == null) return Redirect("/404");
 
             TaskModel.RemoveAllExpiredTasks(ActiveTasks);
-            if (!ActiveTasks.ContainsKey(cookie)) TempData[Helper.ErrorToken] = "Èas pro odevzdání vypršel!"; return Redirect($"/task/{taskId}"); 
+            if (!ActiveTasks.ContainsKey(cookie))
+            {
+                TempData[Helper.ErrorToken] = "Èas pro odevzdání vypršel!";
+                return Redirect($"/task/{taskId}");
+            }
 
             var at = ActiveTasks[cookie];
 
@@ -202,8 +206,12 @@ namespace SPS_Code.Controllers
             if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
             var errorMessage = TaskModel.CreateAndSaveToDb(taskCreateRequest, _context, out var taskId);
-            if (errorMessage != null) TempData[Helper.ErrorToken] = errorMessage; return View("Create", taskCreateRequest.SetError(errorMessage));
-
+            if (errorMessage != null)
+            {
+                TempData[Helper.ErrorToken] = errorMessage; 
+                return View("Create", taskCreateRequest.SetError(errorMessage));
+            }
+            
             TempData[Helper.SuccessToken] = "Úloha byla úspìšnì vytvoøena!";
             return Redirect($"/task/{taskId}");
         }
@@ -239,7 +247,11 @@ namespace SPS_Code.Controllers
             if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
             var succeed = TaskModel.Edit(editRequest, _context, taskId);
-            if (succeed != null) { TempData[Helper.ErrorToken] = "Nastala neoèekávaná chyba!"; return View("Edit", editRequest.SetError("Nastala neoèekávaná chyba!")); }
+            if (succeed != null) 
+            { 
+                TempData[Helper.ErrorToken] = "Nastala neoèekávaná chyba!"; 
+                return View("Edit", editRequest.SetError("Nastala neoèekávaná chyba!")); 
+            }
 
             TempData[Helper.SuccessToken] = "Úloha byla úspìšnì upravena!";
             return Redirect($"/task/{taskId}");
