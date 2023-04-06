@@ -33,7 +33,7 @@ namespace SPS_Code.Controllers
             if(!task.Visible && user?.IsAdmin != true) return Redirect("/task/show");
 
             var cat = user?.UserCategory ?? _context.UserCategories.First();
-            if(!task.ViewUserCategories.Contains(cat)) return Redirect("/task/show");
+            if(user?.IsAdmin != true && !task.ViewUserCategories.Contains(cat)) return Redirect("/task/show");
 
             ResponseTask rt = new();
             rt.MaxPoints = task.MaxPoints;

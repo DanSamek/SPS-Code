@@ -15,12 +15,13 @@
     display: block;
 }
 
-.user-overview div {
-    grid-template-columns: 2fr 200px 60px;
+.user-overview > div {
+    grid-template-columns: 80% calc(20% - 60px) 60px;
     max-width: 100%;
 }
-.user-overview div:first-child {
-    grid-template-columns: repeat(6, 1fr) 60px;
+.user-overview > div:first-child div {
+    grid-template-columns: repeat(5, 1fr);
+    border: none !important;
 }
 .user-overview form {
     display: grid;
@@ -130,8 +131,8 @@ input[type=submit]:hover, .user-overview button:hover {
 }
 
 @media screen and (max-width: 1200px) {
-    .user-overview div {
-        grid-template-columns: 72% 200px 60px;
+    .user-overview > div {
+        grid-template-columns: 72% calc(28% - 60px) 60px;
         max-width: 100%;
     }
     input, select {
@@ -141,10 +142,13 @@ input[type=submit]:hover, .user-overview button:hover {
     .user-overview form:first-child {
         grid-template-columns: repeat(5, 20%);
     }
+    button {
+        font-size: 15px !important;
+    }
 }
 @media screen and (max-width: 800px) {
-    .user-overview div {
-        grid-template-columns: 70% 120px 30px;
+    .user-overview > div {
+        grid-template-columns: 70% calc(30% - 50px) 50px;
         max-width: 100%;
     }
     input, select {
@@ -159,8 +163,8 @@ input[type=submit]:hover, .user-overview button:hover {
     }
 }
 
-@media screen and (max-width: 500px) {
-    .user-overview div{
+@media screen and (max-width: 550px) {
+    .user-overview > div{
         display: block;
         margin-bottom: 20px;
         padding-bottom: 20px;
