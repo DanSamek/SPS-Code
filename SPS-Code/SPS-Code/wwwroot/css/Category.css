@@ -2,6 +2,8 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+
+    margin-top: 80px;
 }
 
 img {
@@ -120,4 +122,14 @@ input[type=submit]:hover {
     border-radius: 20px;
     transition: 0.25s;
     background-color: rgb(10,124,235);
+}
+
+@media screen and (max-width: 532px) {
+    #cat {
+        display: block;
+    }
+    .overview {
+        width: 100%;
+        margin-bottom: 30px;
+    }
 }
