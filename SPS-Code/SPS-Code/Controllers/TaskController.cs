@@ -4,6 +4,7 @@ using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Data;
 using SPS_Code.Data.Models;
 using SPS_Code.Helpers;
+using System.Collections.Immutable;
 
 namespace SPS_Code.Controllers
 {
@@ -33,7 +34,8 @@ namespace SPS_Code.Controllers
             if(!task.Visible && user?.IsAdmin != true) return Redirect("/task/show");
 
             var cat = user?.UserCategory ?? _context.UserCategories.First();
-            if(user?.IsAdmin != true && !task.ViewUserCategories.Contains(cat)) return Redirect("/task/show");
+            if (!task.ViewUserCategories.Contains(_context.UserCategories.First()))
+                if(user?.IsAdmin != true && !task.ViewUserCategories.Contains(cat)) return Redirect("/task/show");
 
             ResponseTask rt = new();
             rt.MaxPoints = task.MaxPoints;
@@ -61,8 +63,9 @@ namespace SPS_Code.Controllers
             Helper.GetUser(HttpContext, _context, out var user);
             var cat = user?.UserCategory ?? _context.UserCategories.First();
             var tasks = _context.Tasks?.Include(t => t.ViewUserCategories)
-                .Where(t => user != null && user.IsAdmin == true || t.ViewUserCategories.Contains(_context.UserCategories.First()) || t.ViewUserCategories.Contains(cat)).ToList();
-
+                .Where(t => user != null && user.IsAdmin == true || t.ViewUserCategories.Contains(_context.UserCategories.First()) || t.ViewUserCategories.Contains(cat))?
+                .OrderByDescending(t => t.ViewUserCategories.Contains(cat)).ThenByDescending(t => t.Created).ToList();
+            
             ViewData["admin"] = user?.IsAdmin;
             return View(tasks);
         }
@@ -165,7 +168,12 @@ namespace SPS_Code.Controllers
         [HttpPost("/task/validateInput/{taskId}")]
         public ActionResult ValidateInput(int taskId, [FromForm] IFormFile UserFile)
         {
-            if (UserFile == null) return Redirect($"/task/{taskId}");
+            TaskModel.RemoveAllExpiredTasks(ActiveTasks);
+            if (UserFile == null)
+            {
+                TempData[Helper.ErrorToken] = "Nebyl pøiložen žádný soubor.";
+                return Redirect($"/task/{taskId}");
+            }
 
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
             if (cookie == null) return Redirect("/404");
@@ -173,7 +181,6 @@ namespace SPS_Code.Controllers
             var task = TaskModel.GetTaskModel(_context, taskId);
             if (task == null) return Redirect("/404");
 
-            TaskModel.RemoveAllExpiredTasks(ActiveTasks);
             if (!ActiveTasks.ContainsKey(cookie))
             {
                 TempData[Helper.ErrorToken] = "Èas pro odevzdání vypršel!";

@@ -1,0 +1,44 @@
+﻿@using SPS_Code.Data.Models
+@model List<UserCategory>
+@{
+    UserCategory? cat = ViewBag.Cat ?? null;
+}
+
+@section Style {
+    <link rel="stylesheet" href="~/css/Category.css">
+}
+
+<div id="cat">
+
+    <div class="overview">
+        <div>
+            <span>Název</span>
+            <span>Editovat</span>
+            <span>Vymazat</span>
+        </div>
+
+        @foreach (var _cat in Model ?? new List<UserCategory>())
+        {
+            <div>
+                <span>@_cat.Name</span>
+                <a href="/cat/@_cat.ID"><img src="~/img/edit2.png" /></a>
+                @if (Model.First().ID != _cat.ID)
+                {
+                    <a href="/cat/delete/@_cat.ID" class="delete"><img src="~/img/bin.png" /> <img src="~/img/bin-open.png" /></a>
+                } 
+            </div>
+        }
+    </div>
+
+    <form method="post" action="/cat/edit@(cat == null ? "" : $"/{cat.ID}")">
+        <h2>@(cat == null ? "Přidat Kategorii" : "Upravit Kategorii")</h2>
+        @if (cat != null)
+        {
+            <label for="dis">Původní název</label>
+            <input value="@cat.Name" name="dis" disabled> 
+        }
+        <input name="name" type="text" placeholder="Název..." value="@cat?.Name" />
+        <input type="submit" value="@(cat == null ? "Přidat" : "Upravit")"/>
+    </form>
+
+</div>
