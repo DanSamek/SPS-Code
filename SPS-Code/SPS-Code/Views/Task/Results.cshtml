@@ -1,6 +1,10 @@
 ﻿@using SPS_Code.Data.Models;
 @model List<UserModel>
 
+@{
+    int id = (int)ViewData["ID"];
+}
+
 @section Style {
     <link rel="stylesheet" href="~/css/Results.css">
 }
@@ -15,7 +19,7 @@
     <div>
         <div>@um.FirstName @um.LastName</div>
         <div>@um.UserCategory.Name</div>
-        <div>@um.Tasks[0].MaxPointsObtained/@um.Tasks[0].Task.MaxPoints b.</div>
+        <div>@um.Tasks?.First(t => t.Task.Id == id).MaxPointsObtained/@um.Tasks?.First(t => t.Task.Id == id).Task.MaxPoints b.</div>
     </div>
 }
 </div>

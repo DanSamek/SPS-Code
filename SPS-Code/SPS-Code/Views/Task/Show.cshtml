@@ -1,8 +1,13 @@
 @using SPS_Code.Helpers;
+@using SPS_Code.Data.Models
 @model List<SPS_Code.Data.Models.TaskModel>
 
 @{
     bool admin = Helper.IsAdmin(ViewContext.HttpContext);
+
+    UserModel? user = ViewBag.User;
+
+    List<UserTaskResult> results = user?.Tasks ?? new List<UserTaskResult>();
 }
 @section Style {
     <link rel="stylesheet" href="~/css/Task.css" asp-append-version="true" />
@@ -23,28 +28,43 @@
               <p>Zobrazení</p>
           }
       </div>
-      @foreach (var task in Model)
+      @foreach (TaskModel task in Model)
       {
-          if (!task.Visible && !admin) continue;
-          <div class="@(task.Visible ? "" : "hidden")">
-              <p>@task.Name</p>
-              <p>@task.MaxPoints bodů</p>
-              <p>@task.MaxSubmitTimeMinutes min.</p>
-              <p>@task.Created.ToShortDateString()</p>
-              <a href="/task/@task.Id"><img title="Detail" alt="Detail" src="~/img/detail.png"></a>
-              @if (admin)
-              {
-                    <a href="/task/results/@task.Id"><img title="Výsledky" alt="Vysledky" src="~/img/results.png"></a>
-                    <a href="/task/edit/@task.Id"><img title="Edit" alt="Edit" src="~/img/edit.png"></a>
-                    if(task.Visible)
-                    {
-                        <a href="/task/hide/@task.Id"><img title="Skrýt úlohu" alt="Skrýt" src="~/img/show.png"></a>
-                    }
-                    else
-                    {
-                        <a href="/task/unhide/@task.Id"><img title="Odkrýt úlohu" alt="Odkrýt" src="~/img/hide.png"></a>
-                    }
-              }
-          </div>
+        if (!task.Visible && !admin) continue;
+        <div class="@(task.Visible ? "" : "hidden")">
+            <p>@task.Name</p>
+            <p>@task.MaxPoints bodů</p>
+            <p>@task.MaxSubmitTimeMinutes min.</p>
+            <p>@task.Created.ToShortDateString()</p>
+            <a href="/task/@task.Id"><img title="Detail" alt="Detail" src="~/img/detail.png"></a>
+            @if (admin)
+            {
+                <a href="/task/results/@task.Id"><img title="Výsledky" alt="Vysledky" src="~/img/results.png"></a>
+                <a href="/task/edit/@task.Id"><img title="Edit" alt="Edit" src="~/img/edit.png"></a>
+                if(task.Visible)
+                {
+                    <a href="/task/hide/@task.Id"><img title="Skrýt úlohu" alt="Skrýt" src="~/img/show.png"></a>
+                }
+                else
+                {
+                    <a href="/task/unhide/@task.Id"><img title="Odkrýt úlohu" alt="Odkrýt" src="~/img/hide.png"></a>
+                }
+            }
+            @{
+                var _taskResult = results.FirstOrDefault(r => r.Task.Id == task.Id);
+            }
+            @if (_taskResult == null && task.ViewUserCategories.Contains(user?.UserCategory))
+            {
+                <img class="status" src="~/img/warning.png" />
+            }
+            else if (_taskResult != null && _taskResult.MaxPointsObtained == task.MaxPoints)
+            {
+                <img class="status" src="~/img/done.png" />
+            }
+            else if (_taskResult != null)
+            {
+                <img class="status" src="~/img/progress.png" />
+            }
+        </div>
       }
 </div>

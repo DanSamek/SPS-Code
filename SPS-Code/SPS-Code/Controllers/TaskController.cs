@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Data;
 using SPS_Code.Data.Models;
@@ -65,7 +66,9 @@ namespace SPS_Code.Controllers
             var tasks = _context.Tasks?.Include(t => t.ViewUserCategories)
                 .Where(t => user != null && user.IsAdmin == true || t.ViewUserCategories.Contains(_context.UserCategories.First()) || t.ViewUserCategories.Contains(cat))?
                 .OrderByDescending(t => t.ViewUserCategories.Contains(cat)).ThenByDescending(t => t.Created).ToList();
-            
+
+            ViewBag.User = user;
+
             ViewData["admin"] = user?.IsAdmin;
             return View(tasks);
         }
@@ -278,6 +281,8 @@ namespace SPS_Code.Controllers
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
             var task = TaskModel.GetTaskModel(_context, taskId);
             if (task == null) return Redirect("/404");
+
+            ViewData["ID"] = task.Id;
 
             var userData = _context.Users?.Include(x => x.Tasks).Where(x => x.Tasks.Any(x => x.Task.Id == taskId)).ToList();
             return View(userData);
