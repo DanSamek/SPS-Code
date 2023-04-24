@@ -130,6 +130,17 @@ input[type=submit]:hover, .user-overview button:hover {
     position: absolute;
 }
 
+.section {
+    display: block !important;
+    margin-bottom: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: left !important;
+}
+.section hr {
+    margin: 0;
+}
+
 @media screen and (max-width: 1200px) {
     .user-overview > div {
         grid-template-columns: 72% calc(28% - 60px) 60px;

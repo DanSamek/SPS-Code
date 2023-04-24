@@ -40,5 +40,9 @@
         <input name="name" type="text" placeholder="Název..." value="@cat?.Name" />
         <input type="submit" value="@(cat == null ? "Přidat" : "Upravit")"/>
     </form>
+    @if (cat != null)
+    {
+        <a href="/cat" class="new">Nová Kategorie</a>
+    }
 
 </div>

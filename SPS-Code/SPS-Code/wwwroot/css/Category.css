@@ -94,7 +94,7 @@ form h2 {
     margin-bottom: 15px;
 }
 
-input {
+input, .new {
     width: 100%;
     display: block;
     border: 1px solid #bbb;
@@ -107,7 +107,14 @@ label {
     font-size: 0.8em;
 }
 
-input[type=submit] {
+.new {
+    color: white !important;
+    width: 200px;
+    text-align: center;
+    text-decoration: none;
+}
+
+input[type=submit], .new {
     padding: 4px 15px;
     font-size: 20px;
     font-weight: bold;
@@ -118,11 +125,12 @@ input[type=submit] {
     color: white;
 }
 
-input[type=submit]:hover {
+input[type=submit]:hover, .new:hover {
     border-radius: 20px;
     transition: 0.25s;
     background-color: rgb(10,124,235);
 }
+
 
 @media screen and (max-width: 532px) {
     #cat {
