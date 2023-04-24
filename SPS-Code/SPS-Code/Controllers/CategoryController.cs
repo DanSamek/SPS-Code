@@ -103,6 +103,11 @@ namespace SPS_Code.Controllers
                 return RedirectToAction("Index");
             }
 
+            foreach (var user in _context.Users.Where(u => u.UserCategory.ID == id))
+            {
+                user.UserCategory = _context.UserCategories.FirstOrDefault();
+            }
+
             _context.UserCategories.Remove(cat);
             _context.SaveChanges();
 

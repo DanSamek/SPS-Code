@@ -49,7 +49,7 @@ namespace SPS_Code.Data.Models
 
             UserModel user = new()
             {
-                IsAdmin = false,
+                IsAdmin = context.Users.Count() == 0,
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,    
