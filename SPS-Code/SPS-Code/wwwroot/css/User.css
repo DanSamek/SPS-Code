@@ -51,6 +51,50 @@ form input:last-child:hover, input:last-child:hover {
     transition: 0.15s;
 }
 
+
+.info img {
+    height: 30px;
+}
+.info p {
+    margin: 0;
+}
+
+.info a {
+    color: black;
+    text-decoration: none;
+}
+
+.info > a, .info > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.8fr 50px;
+    line-height: 35px;
+    padding: 5px 10px;
+    text-align: center;
+    border-bottom: 2px solid lightgray;
+    justify-items: center;
+    align-items: center;
+}
+
+.info > a :first-child, .info > div :first-child {
+    justify-self: left !important;
+}
+
+.info > :nth-child(2) {
+    background-color: var(--barva);
+    color: white;
+    border-bottom: 2px solid #186EC4;
+}
+
+@media screen and (max-width: 575px) {
+    .info > a, .info > div {
+        grid-template-columns: 0.8fr 1fr 0.8fr 30px;
+    }
+
+    .info img {
+        height: 20px;
+    }
+}
+
 @media screen and (max-width: 768px) {
     #edit {
         display: block;

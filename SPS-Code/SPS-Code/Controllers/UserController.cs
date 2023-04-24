@@ -145,7 +145,7 @@ namespace SPS_Code.Controllers
         public ActionResult ManageUsers()
         {
             if (!Helper.IsAdmin(HttpContext)) return Redirect("/404");
-            var users = _context.Users.ToList();
+            var users = _context.Users.OrderByDescending(u => u.UserCategory.Name == "Administrátor" || u.UserCategory.Name == "Admin").ThenBy(u => u.UserCategory.Name).ToList();
 
             ViewBag.Categories = _context.UserCategories.ToList();
             return View(users);

@@ -4,7 +4,6 @@
 
 @section Style {
     <link rel="stylesheet" href="~/css/User.css">
-    <link rel="stylesheet" href="~/css/TaskDetail.css">
 }
 
 <div id="edit">
@@ -40,9 +39,9 @@
             <p>Počet pokusů</p>
             <p>Max. počet bodů</p>
         </div>
-        <div>
-            @foreach (var task in Model.Tasks)
-            {
+        @foreach (var task in Model.Tasks)
+        {
+            <a href="/task/@(task.Task.Id)">
                 <p>@task.LastAttemptTime</p>
                 <p>@task.AttemptsCount</p>
                 <p>@task.MaxPointsObtained / @task.Task.MaxPoints</p>
@@ -50,7 +49,7 @@
                 {
                     <img src="~/img/done.png" />
                 }
-            }
-        </div>
+            </a>
+        }
     </div>
 }
