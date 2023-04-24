@@ -132,12 +132,15 @@ input[type=submit]:hover, .new:hover {
 }
 
 
-@media screen and (max-width: 532px) {
+@media screen and (max-width: 767px) {
     #cat {
         display: block;
     }
     .overview {
         width: 100%;
         margin-bottom: 30px;
+    }
+    .new {
+        width: 100%;
     }
 }
