@@ -16,5 +16,6 @@ namespace SPS_Code.Controllers.RequestModels
         public int MaxPoints { get; set; }
         public int MaxSubmitTimeMinutes { get; set; }
         public int TestCount { get; set; }
+        public List<int>? CategoryIDs { get; set; }
     }
 }

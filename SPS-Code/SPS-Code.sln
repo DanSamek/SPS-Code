@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPS-Code", "SPS-Code\SPS-Code.csproj", "{33DD0F78-0442-4D44-954E-767E89504D38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SPS-Code", "SPS-Code\SPS-Code.csproj", "{33DD0F78-0442-4D44-954E-767E89504D38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

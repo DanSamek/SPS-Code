@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPS_Code.Data;
 
@@ -11,9 +12,11 @@ using SPS_Code.Data;
 namespace SPSCode.Migrations
 {
     [DbContext(typeof(CodeDbContext))]
-    partial class CodeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230405173529_Categories-name-fix")]
+    partial class Categoriesnamefix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,21 +153,6 @@ namespace SPSCode.Migrations
                     b.ToTable("UserTaskResult");
                 });
 
-            modelBuilder.Entity("TaskModelUserCategory", b =>
-                {
-                    b.Property<int>("TaskModelId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ViewUserCategoriesID")
-                        .HasColumnType("int");
-
-                    b.HasKey("TaskModelId", "ViewUserCategoriesID");
-
-                    b.HasIndex("ViewUserCategoriesID");
-
-                    b.ToTable("TaskModelUserCategory");
-                });
-
             modelBuilder.Entity("SPS_Code.Data.Models.UserModel", b =>
                 {
                     b.HasOne("SPS_Code.Data.Models.UserCategory", "UserCategory")
@@ -193,21 +181,6 @@ namespace SPSCode.Migrations
                     b.Navigation("Task");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TaskModelUserCategory", b =>
-                {
-                    b.HasOne("SPS_Code.Data.Models.TaskModel", null)
-                        .WithMany()
-                        .HasForeignKey("TaskModelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SPS_Code.Data.Models.UserCategory", null)
-                        .WithMany()
-                        .HasForeignKey("ViewUserCategoriesID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("SPS_Code.Data.Models.UserModel", b =>

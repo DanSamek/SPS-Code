@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using SPS_Code.Controllers.RequestModels;
 using SPS_Code.Data;
 using SPS_Code.Data.Models;
 using SPS_Code.Helpers;
+using System.Collections.Immutable;
 
 namespace SPS_Code.Controllers
 {
@@ -26,10 +28,15 @@ namespace SPS_Code.Controllers
         [HttpGet("/task/{id}")]
         public ActionResult Task(int id)
         {
-            var task = _context.Tasks?.FirstOrDefault(x => x.Id == id);
+            var task = TaskModel.GetTaskModel(_context, id);
             if (task == null) return Redirect("/404");
 
-            if(!task.Visible && !Helper.GetUser(HttpContext, _context, out _, true)) return Redirect("/task/show");
+            Helper.GetUser(HttpContext, _context, out var user);
+            if(!task.Visible && user?.IsAdmin != true) return Redirect("/task/show");
+
+            var cat = user?.UserCategory ?? _context.UserCategories.First();
+            if (!task.ViewUserCategories.Contains(_context.UserCategories.First()))
+                if(user?.IsAdmin != true && !task.ViewUserCategories.Contains(cat)) return Redirect("/task/show");
 
             ResponseTask rt = new();
             rt.MaxPoints = task.MaxPoints;
@@ -46,7 +53,6 @@ namespace SPS_Code.Controllers
             if (ActiveTasks.ContainsKey(cookie)) at = ActiveTasks[cookie];
             if (at.TaskId == id) rt.ActiveTask = at;
 
-            var user = _context.Users?.Include(x => x.Tasks).ThenInclude(x => x.Task).FirstOrDefault(x => x.Id == cookie);
             UserTaskResult taskResult = user.Tasks.FirstOrDefault(x => x.Task.Id == id);
             rt.UserTaskResult = taskResult;
             return View(rt);
@@ -55,9 +61,14 @@ namespace SPS_Code.Controllers
         [Route("show")]
         public ActionResult Show()
         {
-            var tasks = _context.Tasks?.ToList();
-
             Helper.GetUser(HttpContext, _context, out var user);
+            var cat = user?.UserCategory ?? _context.UserCategories.First();
+            var tasks = _context.Tasks?.Include(t => t.ViewUserCategories)
+                .Where(t => user != null && user.IsAdmin == true || t.ViewUserCategories.Contains(_context.UserCategories.First()) || t.ViewUserCategories.Contains(cat))?
+                .OrderByDescending(t => t.ViewUserCategories.Contains(cat)).ThenByDescending(t => t.Created).ToList();
+
+            ViewBag.User = user;
+
             ViewData["admin"] = user?.IsAdmin;
             return View(tasks);
         }
@@ -66,6 +77,7 @@ namespace SPS_Code.Controllers
         public ActionResult Create()
         {
             if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
+            ViewBag.Categories = _context.UserCategories.ToList();
             return View(new TaskCreateRequest());
         }
 
@@ -82,7 +94,7 @@ namespace SPS_Code.Controllers
         [HttpGet("/task/hide/{taskId}")]
         public ActionResult Hide(int taskId)
         {
-            var task = _context.Tasks?.FirstOrDefault(t => t.Id == taskId);
+            var task = TaskModel.GetTaskModel(_context, taskId);
             if(task == null) return Redirect("/404");
             if(!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
@@ -113,7 +125,7 @@ namespace SPS_Code.Controllers
 
             if (ActiveTasks.ContainsKey(cookie)) return Redirect($"/task/{taskId}");
            
-            var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
+            var task = TaskModel.GetTaskModel(_context, taskId);
             if (task == null) return Redirect("/404");
 
             // For multiple requests
@@ -159,15 +171,19 @@ namespace SPS_Code.Controllers
         [HttpPost("/task/validateInput/{taskId}")]
         public ActionResult ValidateInput(int taskId, [FromForm] IFormFile UserFile)
         {
-            if (UserFile == null) return Redirect($"/task/{taskId}");
+            TaskModel.RemoveAllExpiredTasks(ActiveTasks);
+            if (UserFile == null)
+            {
+                TempData[Helper.ErrorToken] = "Nebyl pøiložen žádný soubor.";
+                return Redirect($"/task/{taskId}");
+            }
 
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
             if (cookie == null) return Redirect("/404");
 
-            var task = _context.Tasks?.FirstOrDefault(x => x.Id == taskId);
+            var task = TaskModel.GetTaskModel(_context, taskId);
             if (task == null) return Redirect("/404");
 
-            TaskModel.RemoveAllExpiredTasks(ActiveTasks);
             if (!ActiveTasks.ContainsKey(cookie))
             {
                 TempData[Helper.ErrorToken] = "Èas pro odevzdání vypršel!";
@@ -221,7 +237,7 @@ namespace SPS_Code.Controllers
             // If no admin, redirect
             if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
-            var data = _context.Tasks.FirstOrDefault(t => t.Id == taskId);
+            var data = TaskModel.GetTaskModel(_context, taskId);
             if(data == null) return Redirect("/404");
 
             var ter = new TaskEditRequest()
@@ -233,8 +249,11 @@ namespace SPS_Code.Controllers
                 Name = data.Name,
                 MaxPoints = data.MaxPoints,
                 TestCount = data.TestCount,
-                Id = data.Id
+                Id = data.Id,
+                CategoryIDs = data.ViewUserCategories?.Select(c => c.ID).ToList()
             };
+
+            ViewBag.Categories = _context.UserCategories.ToList();
 
             return View("Edit", ter);
         }
@@ -260,8 +279,10 @@ namespace SPS_Code.Controllers
         {
             if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
             var cookie = HttpContext.Session.GetString(Helper.UserCookie);
-            var task = _context.Tasks.FirstOrDefault(t => t.Id == taskId);
-            if(task == null) return Redirect("/404");
+            var task = TaskModel.GetTaskModel(_context, taskId);
+            if (task == null) return Redirect("/404");
+
+            ViewData["ID"] = task.Id;
 
             var userData = _context.Users?.Include(x => x.Tasks).Where(x => x.Tasks.Any(x => x.Task.Id == taskId)).ToList();
             return View(userData);

@@ -1,4 +1,6 @@
 ﻿.task-overview > div {
+    position: relative;
+
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr 100px;
 
@@ -43,6 +45,14 @@
 }
 .task-overview .hidden:hover {
     background-color: #A1A3A5;
+}
+
+.task-overview .status {
+    position: absolute;
+    height: 20px;
+
+    left: -10px;
+    top: -5px;
 }
 
 @media screen and (max-width: 575px) {

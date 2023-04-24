@@ -10,11 +10,17 @@
 
 #res > div {
     display: grid;
-    grid-template-columns: 1fr 200px;
+    grid-template-columns: 1fr 0.2fr 0.2fr;
     line-height: 35px;
     padding: 5px 10px;
     border-bottom: 2px solid lightgray;
 }
 #res > div :last-child {
     text-align: center;
+}
+
+@media screen and (max-width: 1200px) {
+    #res > div {
+        grid-template-columns: 1fr 0.2fr 0.5fr;
+    }
 }

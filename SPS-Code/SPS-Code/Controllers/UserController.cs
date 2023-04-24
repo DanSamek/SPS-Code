@@ -58,7 +58,7 @@ namespace SPS_Code.Controllers
                 return View("Login", userRequest.SetError(errorMessage));
             }
             TempData[Helper.SuccessToken] = "Přihlášení proběhlo úspěšně!";
-            return Redirect("/");
+            return Redirect("/user");
         }
 
         [Route("logout")]
@@ -87,7 +87,7 @@ namespace SPS_Code.Controllers
         [Route("edit/{id}")]
         public ActionResult EditUser([FromForm] UserEditRequest editRequest, string id)
         {
-            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/");
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
             var _targetUser = _context.Users.FirstOrDefault(u => u.Id == id);
 
             if (_targetUser == null) { return Redirect("/"); }
@@ -123,7 +123,7 @@ namespace SPS_Code.Controllers
         [Route("chpasswd/{id}")]
         public ActionResult ChangePassword([FromForm] UserPasswordRequest editRequest, string id)
         {
-            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/");
+            if (!Helper.GetUser(HttpContext, _context, out var user, true)) return Redirect("/404");
 
             var _targetUser = _context.Users.FirstOrDefault(u => u.Id == id);
             if (_targetUser == null) return Redirect("/");
@@ -144,8 +144,8 @@ namespace SPS_Code.Controllers
         [Route("manage")]
         public ActionResult ManageUsers()
         {
-            if (!Helper.IsAdmin(HttpContext)) return Redirect("/");
-            var users = _context.Users.ToList();
+            if (!Helper.IsAdmin(HttpContext)) return Redirect("/404");
+            var users = _context.Users.OrderByDescending(u => u.UserCategory.Name == "Administrátor" || u.UserCategory.Name == "Admin").ThenBy(u => u.UserCategory.Name).ToList();
 
             ViewBag.Categories = _context.UserCategories.ToList();
             return View(users);
